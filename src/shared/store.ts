@@ -43,7 +43,7 @@ export const store = createStore<Store>("store", storeValidator, {
       companyBonusPct: [],
       meritBonus: [],
       companyBonus: [],
-      mrpBonus: [],
+      retirementBonus: [],
       equityPct: [],
       meritIncreasePct: [],
     },

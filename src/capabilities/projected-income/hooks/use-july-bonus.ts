@@ -22,7 +22,8 @@ export const useJulyBonus = (year: number): Outcome => {
 
   const actual = useStore(
     store,
-    (x) => findSameYear(payDay, x.projectedIncome.timeSeries.mrpBonus)?.value
+    (x) =>
+      findSameYear(payDay, x.projectedIncome.timeSeries.retirementBonus)?.value
   );
 
   const income = useBaseIncome(

@@ -10,7 +10,7 @@ export const projectedWealth = z.object({
     companyBonusPct: z.array(accountDataValidator),
     meritBonus: z.array(accountDataValidator),
     companyBonus: z.array(accountDataValidator),
-    mrpBonus: z.array(accountDataValidator),
+    retirementBonus: z.array(accountDataValidator),
     equityPct: z.array(accountDataValidator),
     meritIncreasePct: z.array(accountDataValidator),
   }),

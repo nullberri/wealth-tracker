@@ -35,7 +35,7 @@ export const ProjectedIncome = () => {
     [year]
   );
 
-  const mrpPayDay = useMemo(
+  const julyPayDay = useMemo(
     () => DateTime.fromObject({ day: 15, month: 7, year: year }),
     [year]
   );
@@ -92,7 +92,11 @@ export const ProjectedIncome = () => {
             outcome={juneBonus}
             payDate={junePayDay}
           />
-          <Outcome title="MRP Bonus" outcome={julyBonus} payDate={mrpPayDay} />
+          <Outcome
+            title="Retirement Bonus"
+            outcome={julyBonus}
+            payDate={julyPayDay}
+          />
         </Stack>
       </Box>
       <Box flex="1 1 auto">
@@ -147,9 +151,9 @@ export const ProjectedIncome = () => {
               variant="cash"
             />
             <Layout
-              title="MRP Bonus ($)"
-              accountName="mrpBonus"
-              defaultDate={mrpPayDay}
+              title="Retirement Bonus ($)"
+              accountName="retirementBonus"
+              defaultDate={julyPayDay}
               variant="cash"
             />
           </Box>
