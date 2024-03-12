@@ -4,5 +4,5 @@ interface CashProps {
   value?: number;
 }
 export const Cash = ({ value }: CashProps) => {
-  return value ? formatCashShort(value) : null;
+  return value ? formatCashShort(value) : 0;
 };
