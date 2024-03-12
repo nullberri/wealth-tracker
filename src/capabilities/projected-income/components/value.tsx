@@ -1,0 +1,54 @@
+import { Box } from "@mui/material";
+import { ReactNode } from "react";
+
+interface CellProps {
+  children?: ReactNode;
+  secondaryValue?: ReactNode;
+  title: string;
+}
+
+export const Value = (props: CellProps) => {
+  const { children, secondaryValue, title } = props;
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        minWidth: 106,
+
+        height: 64,
+        padding: "0px 8px",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        gap: 0.5,
+        flexShrink: 0,
+      }}
+    >
+      <Box display={"flex"} alignItems={"center"} gap={0.5}>
+        <Box fontSize={18} fontWeight={700} lineHeight={"20px"}>
+          {children ? children : "??"}
+        </Box>
+        {!!secondaryValue && (
+          <Box
+            alignSelf={"flex-end"}
+            fontSize={12}
+            fontWeight={500}
+            lineHeight={"16px"}
+            textTransform={"uppercase"}
+            color={"#888"}
+          >
+            {secondaryValue}
+          </Box>
+        )}
+      </Box>
+      <Box
+        fontSize={12}
+        fontWeight={500}
+        lineHeight={"16px"}
+        textTransform={"uppercase"}
+      >
+        {title}
+      </Box>
+    </Box>
+  );
+};
