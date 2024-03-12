@@ -3,7 +3,7 @@ import { accountDataValidator } from "./account-data";
 
 export const projectedWealth = z.object({
   timeSeries: z.object({
-    monthlyIncome: z.array(accountDataValidator),
+    paycheck: z.array(accountDataValidator),
     retirementRate: z.array(accountDataValidator),
     savingsRate: z.array(accountDataValidator),
     meritBonusPct: z.array(accountDataValidator),

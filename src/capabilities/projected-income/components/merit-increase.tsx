@@ -1,28 +1,28 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { Value } from "./value";
-import { DateTime } from "luxon";
 import { useStore } from "@tanstack/react-store";
-import { store } from "shared/store";
-import {
-  findNearstOnOrBefore,
-  findSameYear,
-} from "shared/utility/graph-helpers";
-import { Percent } from "shared/components/formatters/percent";
+import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
+import { Percent } from "shared/components/formatters/percent";
 import { Until } from "shared/components/formatters/until";
+import { store } from "shared/store";
+import {
+  findNearstOnOrBefore as findNearestOnOrBefore,
+  findSameYear,
+} from "shared/utility/graph-helpers";
+import { Value } from "./value";
 
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   const { title, payDate } = props;
 
   const income = useStore(store, (x) =>
-    findNearstOnOrBefore(payDate, x.projectedIncome.timeSeries.monthlyIncome)
+    findNearestOnOrBefore(payDate, x.projectedIncome.timeSeries.paycheck)
   );
   const meritPct = useStore(
     store,
     (x) =>
       payDate &&
-      findNearstOnOrBefore(
+      findNearestOnOrBefore(
         payDate,
         x.projectedIncome.timeSeries.meritIncreasePct
       )
@@ -53,7 +53,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
         <Value
-          title={"Monthly"}
+          title={"Paycheck"}
           secondaryValue={<Percent value={totalAdjust} />}
         >
           <Cash value={(income?.value ?? 0) * multiplier} />

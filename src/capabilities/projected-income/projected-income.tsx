@@ -1,16 +1,16 @@
 import { Box, Stack } from "@mui/system";
+import { DatePicker } from "@mui/x-date-pickers";
+import { DateTime } from "luxon";
+import { useMemo, useState } from "react";
+import { AddOutcome, outcomeFromSingle } from "shared/utility/min-max-avg";
+import { BonusOutcome } from "./components/bonus-outcome";
+import { Layout } from "./components/data-entry/data-entry";
+import { MeritOutcome } from "./components/merit-increase";
+import { Outcome } from "./components/outcome";
 import { useAprilBonus } from "./hooks/use-april-bonus";
 import { useBaseIncome } from "./hooks/use-base-income";
 import { useJulyBonus } from "./hooks/use-july-bonus";
 import { useJuneBonus } from "./hooks/use-june-bonus";
-import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
-import { BonusOutcome } from "./components/bonus-outcome";
-import { Outcome } from "./components/outcome";
-import { MeritOutcome } from "./components/merit-increase";
-import { Layout } from "./components/data-entry/data-entry";
-import { AddOutcome, outcomeFromSingle } from "shared/utility/min-max-avg";
-import { DatePicker } from "@mui/x-date-pickers";
 
 export const ProjectedIncome = () => {
   const [year, setYear] = useState(DateTime.local().year);
@@ -109,7 +109,7 @@ export const ProjectedIncome = () => {
             flexShrink={0}
           >
             <Layout
-              accountName="monthlyIncome"
+              accountName="paycheck"
               variant="cash"
               defaultDate={DateTime.fromObject({ day: 1, month: 4 })}
               title="Income Per Check ($)"

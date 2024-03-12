@@ -27,7 +27,7 @@ const valueByDateRange = (account: AccountData[]) => {
 
 export const useBaseIncome = (startDate: DateTime, endDate: DateTime) => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
-  const baseIncome = timeSeries.monthlyIncome;
+  const baseIncome = timeSeries.paycheck;
 
   const lastMerit = useMemo(() => {
     const endOfYear = DateTime.fromObject({ day: 31, month: 12 });
