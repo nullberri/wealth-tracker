@@ -31,13 +31,13 @@ export const Outcome = (props: {
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
         <Value title={"min"}>
-          <Cash value={outcome.min} />
+          <Cash value={outcome.min} fallback={0} />
         </Value>
         <Value title={"avg"}>
-          <Cash value={outcome.avg} />
+          <Cash value={outcome.avg} fallback={0} />
         </Value>
         <Value title={"max"}>
-          <Cash value={outcome.max} />
+          <Cash value={outcome.max} fallback={0} />
         </Value>
         {payDate && (
           <Value

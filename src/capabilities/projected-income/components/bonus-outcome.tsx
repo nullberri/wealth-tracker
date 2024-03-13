@@ -28,19 +28,19 @@ export const BonusOutcome = (props: {
           secondaryValue={<Percent value={outcome.percent.min} />}
           title={"min"}
         >
-          <Cash value={outcome.cash.min} />
+          <Cash value={outcome.cash.min} fallback={0} />
         </Value>
         <Value
           secondaryValue={<Percent value={outcome.percent.avg} />}
           title={"avg"}
         >
-          <Cash value={outcome.cash.avg} />
+          <Cash value={outcome.cash.avg} fallback={0} />
         </Value>
         <Value
           secondaryValue={<Percent value={outcome.percent.max} />}
           title={"max"}
         >
-          <Cash value={outcome.cash.max} />
+          <Cash value={outcome.cash.max} fallback={0} />
         </Value>
         <Value
           title={"Actual"}

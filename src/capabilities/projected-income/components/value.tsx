@@ -14,7 +14,6 @@ export const Value = (props: CellProps) => {
       sx={{
         display: "flex",
         minWidth: 106,
-
         height: 64,
         padding: "0px 8px",
         flexDirection: "column",
