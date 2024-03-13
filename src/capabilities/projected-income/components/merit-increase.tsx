@@ -40,6 +40,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   );
 
   const totalAdjust = meritPct + (equityPct?.value ?? 0);
+  const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
   return (
     <Box
       sx={{
@@ -60,7 +61,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
           title={"Paycheck"}
           secondaryValue={<Percent value={totalAdjust} />}
         >
-          <Cash value={payCheck} />
+          <Cash value={payCheck * multiplier} />
         </Value>
         <Value
           title={"Base Pay"}
