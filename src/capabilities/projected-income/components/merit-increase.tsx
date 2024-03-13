@@ -15,6 +15,7 @@ import { Value } from "./value";
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   const { title, payDate } = props;
 
+  //todo use base income calcs to get real values
   const income = useStore(store, (x) =>
     findNearestOnOrBefore(payDate, x.projectedIncome.timeSeries.paycheck)
   );
