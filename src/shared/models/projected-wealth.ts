@@ -16,5 +16,23 @@ export const projectedWealth = z.object({
   }),
 });
 
+export const getDefaults = () => ({
+  projectedIncome: {
+    timeSeries: {
+      paycheck: [],
+      retirementRate: [],
+      savingsRate: [],
+      meritBonusPct: [],
+      companyBonusPct: [],
+      meritBonus: [],
+      companyBonus: [],
+      retirementBonus: [],
+      equityPct: [],
+      meritIncreasePct: [],
+    },
+  },
+  wealth: {},
+});
+
 export type ProjectedWealth = z.infer<typeof projectedWealth>;
 export type TimeSeries = keyof ProjectedWealth["timeSeries"];
