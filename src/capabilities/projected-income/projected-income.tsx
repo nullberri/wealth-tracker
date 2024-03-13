@@ -65,6 +65,8 @@ export const ProjectedIncome = () => {
                   sx={{ width: 90, marginLeft: "auto", marginRight: 2 }}
                   label={"year"}
                   views={["year"]}
+                  minDate={DateTime.local().plus({ years: -1 })}
+                  maxDate={DateTime.local().plus({ years: 10 })}
                   defaultValue={DateTime.local()}
                   slotProps={{
                     textField: {

@@ -39,11 +39,13 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime) => {
 
   return useMemo(() => {
     const payPerPeriod = valueByDateRange(baseIncome);
+
     const mostRecentPay =
       payPerPeriod.length > 0
         ? payPerPeriod[payPerPeriod.length - 1]
         : ([startDate, endDate, 1] as const);
-    const projectedPayPerPeriod = Array(10)
+
+    const projectedPayPerPeriod = Array(11)
       .fill(mostRecentPay)
       .map(([start, end, value]: [DateTime, DateTime, number], index) => {
         const startDate = start.plus({ years: index + 1 });
@@ -51,9 +53,11 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime) => {
           startDate,
           end.plus({ years: index + 1 }),
           value *
-            (lastMerit +
-              (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0)) **
-              (index + 1),
+            Math.pow(
+              lastMerit +
+                (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0),
+              index + 1
+            ),
         ] as const;
       });
 
