@@ -6,28 +6,32 @@ import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
 import { Until } from "shared/components/formatters/until";
 import { store } from "shared/store";
-import {
-  findNearstOnOrBefore as findNearestOnOrBefore,
-  findSameYear,
-} from "shared/utility/graph-helpers";
+import { findSameYear } from "shared/utility/graph-helpers";
 import { Value } from "./value";
+import { useCommonMerit } from "../hooks/use-common-merit";
+import { useProjectedPay } from "../hooks/use-projected-pay";
+import { useMemo } from "react";
+import { useBaseIncome } from "../hooks/use-base-income";
 
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   const { title, payDate } = props;
 
-  //todo use base income calcs to get real values
-  const income = useStore(store, (x) =>
-    findNearestOnOrBefore(payDate, x.projectedIncome.timeSeries.paycheck)
+  const income = useBaseIncome(
+    DateTime.fromObject({ day: 1, month: 1, year: payDate.year }),
+    DateTime.fromObject({ day: 1, month: 1, year: payDate.year + 1 })
   );
+
+  const commonMerit = useCommonMerit();
   const meritPct = useStore(
     store,
     (x) =>
-      payDate &&
-      findNearestOnOrBefore(
-        payDate,
-        x.projectedIncome.timeSeries.meritIncreasePct
-      )
+      findSameYear(payDate, x.projectedIncome.timeSeries.meritIncreasePct)
+        ?.value ?? commonMerit
   );
+  const payChecks = useProjectedPay();
+  const payCheck = useMemo(() => {
+    return payChecks.find(([start]) => start.year === payDate.year)?.[2] ?? 0;
+  }, [payChecks, payDate.year]);
 
   const equityPct = useStore(
     store,
@@ -35,8 +39,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       payDate && findSameYear(payDate, x.projectedIncome.timeSeries.equityPct)
   );
 
-  const totalAdjust = (meritPct?.value ?? 0) + (equityPct?.value ?? 0);
-  const multiplier = DateTime.local() < payDate ? 1 + totalAdjust : 1;
+  const totalAdjust = meritPct + (equityPct?.value ?? 0);
   return (
     <Box
       sx={{
@@ -57,13 +60,13 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
           title={"Paycheck"}
           secondaryValue={<Percent value={totalAdjust} />}
         >
-          <Cash value={(income?.value ?? 0) * multiplier} />
+          <Cash value={payCheck} />
         </Value>
         <Value
           title={"Base Pay"}
           secondaryValue={<Percent value={totalAdjust} />}
         >
-          <Cash value={(income?.value ?? 0) * multiplier * 26} />
+          <Cash value={income ?? 0} />
         </Value>
         <Value
           title={"Actual"}
