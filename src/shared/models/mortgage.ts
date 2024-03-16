@@ -4,7 +4,7 @@ import { loanValidator } from "./loan";
 
 export const mortgageValidator = z.object({
   type: z.literal("mortgage"),
-  loan: loanValidator.or(z.undefined()),
+  loan: loanValidator.optional(),
   data: z.array(accountDataValidator),
 });
 
