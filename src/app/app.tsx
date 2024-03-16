@@ -2,6 +2,7 @@ import DeleteForever from "@mui/icons-material/DeleteForever";
 import { Box, Button, Stack, Tab, Tabs } from "@mui/material";
 import { NetWealth } from "capabilities/net-wealth";
 import { ProjectedIncome } from "capabilities/projected-income";
+import { ProjectedWealth } from "capabilities/projected-wealth";
 import { useState } from "react";
 import { SafetyButton } from "shared/components/safety-button";
 import { useExport } from "shared/hooks/use-export";
@@ -19,7 +20,7 @@ export const App = () => {
         <Tabs value={tab} onChange={(_, value) => setTab(value)}>
           <Tab value="wealth" label="Total Wealth" />
           <Tab value="projected-income" label="Projected Income" />
-          <Tab disabled value="projected-wealth" label="Projected Wealth" />
+          <Tab value="projected-wealth" label="Projected Wealth" />
         </Tabs>
         <Box marginLeft={"auto"} gap={2} display={"flex"}>
           <Button onClick={onImport}>Import</Button>
@@ -39,6 +40,7 @@ export const App = () => {
       <Box padding={2} height={"95%"} width={"100%"}>
         {tab === "wealth" && <NetWealth />}
         {tab === "projected-income" && <ProjectedIncome />}
+        {tab === "projected-wealth" && <ProjectedWealth />}
       </Box>
     </>
   );
