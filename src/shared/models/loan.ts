@@ -10,4 +10,3 @@ export const loanValidator = z.object({
 });
 
 export type Loan = z.infer<typeof loanValidator>;
-

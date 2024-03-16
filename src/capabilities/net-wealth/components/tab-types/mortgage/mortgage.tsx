@@ -10,8 +10,11 @@ import { AddLoan } from "./add-loan";
 import { AddEntry } from "./add-entry";
 import { AgGrid } from "shared/components/ag-grid";
 import { Mortgage } from "shared/models/mortgage";
-import { getGraphDates } from "shared/utility/graph-helpers";
-import { calcLoanBalance } from "shared/utility/mortgage-calc";
+import {
+  findNearstOnOrBefore,
+  getGraphDates,
+} from "shared/utility/graph-helpers";
+import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 import { DeleteAccount } from "../components/delete-account";
 import { RenameAccount } from "../components/update-account";
 import { Stack } from "@mui/system";
@@ -34,11 +37,21 @@ export const MortgageTab = (props: { accountName: string }) => {
     if (!account?.loan) {
       return [];
     }
-    return getGraphDates(Object.values(allAccounts)).map((date) => ({
-      date,
-      balance: calcLoanBalance(date, account.loan!),
-    }));
-  }, [account.loan, allAccounts]);
+
+    return getGraphDates(Object.values(allAccounts)).map((date) => {
+      const loanBalance = calcLoanBalance(date, account.loan!);
+      return {
+        date,
+        balance: loanBalance,
+        equity: calcEquity(
+          account.loan!.ownershipPct,
+          findNearstOnOrBefore(date, account.data)?.value,
+          loanBalance,
+          account.loan!.principal
+        ),
+      };
+    });
+  }, [account, allAccounts]);
 
   return (
     <Grid container height="100%" width={"100%"} padding={1} spacing={2}>

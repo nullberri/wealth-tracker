@@ -53,6 +53,7 @@ export const createAccountColumnConfig = (
 export const mortgageColumnConfig: ColDef<{
   date: DateTime;
   balance: number;
+  equity: number;
 }>[] = [
   {
     headerName: "Date",
@@ -63,6 +64,12 @@ export const mortgageColumnConfig: ColDef<{
   {
     headerName: "Loan Balance",
     valueGetter: (x) => x.data?.balance.toFixed(2),
+    valueFormatter: (x) => formatCashShort(x.value),
+    type: "numericColumn",
+  },
+  {
+    headerName: "Equity",
+    valueGetter: (x) => x.data?.equity.toFixed(2),
     valueFormatter: (x) => formatCashShort(x.value),
     type: "numericColumn",
   },
