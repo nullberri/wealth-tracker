@@ -9,6 +9,7 @@ import {
   minMaxAvg,
 } from "shared/utility/min-max-avg";
 import { findSameYear } from "shared/utility/graph-helpers";
+import { useMostFrequentValue } from "./use-most-frequent-value";
 
 export const useAprilBonus = (year: number): BonusOutcomes => {
   const payedOn = useMemo(
@@ -29,20 +30,33 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
     return findSameYear(payedOn, timeSeries.meritBonusPct)?.value;
   }, [payedOn, timeSeries.meritBonusPct]);
 
+  const frequentMeritBonusPercent = useMostFrequentValue(
+    timeSeries.meritBonusPct
+  );
+
   return useMemo(() => {
     const meritOutcome = minMaxAvg(
       timeSeries.meritBonusPct
         .filter((x) => DateTime.fromISO(x.date).year <= year)
-        .slice(-3)
         .map((x) => x.value)
     );
+    meritOutcome.avg = frequentMeritBonusPercent;
+
+    const projectedActual = bonusPercent ? bonusPercent * income : undefined;
 
     return {
       percent: { ...meritOutcome, actual: bonusPercent },
       cash: {
         ...scaleOutcome(meritOutcome, income),
-        actual: bonusAmmount,
+        actual: bonusAmmount ?? projectedActual,
       },
     };
-  }, [bonusAmmount, bonusPercent, income, timeSeries.meritBonusPct, year]);
+  }, [
+    bonusAmmount,
+    bonusPercent,
+    frequentMeritBonusPercent,
+    income,
+    timeSeries.meritBonusPct,
+    year,
+  ]);
 };

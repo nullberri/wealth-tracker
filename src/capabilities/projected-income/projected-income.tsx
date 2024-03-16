@@ -49,7 +49,7 @@ export const ProjectedIncome = () => {
       outcomeFromSingle(income),
       meritBonus.cash,
       juneBonus.cash,
-      julyBonus
+      julyBonus.cash
     );
   }, [income, julyBonus, juneBonus, meritBonus]);
 
@@ -94,7 +94,7 @@ export const ProjectedIncome = () => {
             outcome={juneBonus}
             payDate={junePayDay}
           />
-          <Outcome
+          <BonusOutcome
             title="Retirement Bonus"
             outcome={julyBonus}
             payDate={julyPayDay}

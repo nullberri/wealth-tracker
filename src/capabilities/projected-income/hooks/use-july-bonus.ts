@@ -5,7 +5,7 @@ import { useAprilBonus } from "./use-april-bonus";
 import { useJuneBonus } from "./use-june-bonus";
 import {
   AddOutcome,
-  Outcome,
+  BonusOutcomes,
   outcomeFromSingle,
   scaleOutcome,
 } from "shared/utility/min-max-avg";
@@ -14,7 +14,7 @@ import { store } from "shared/store";
 import { findSameYear } from "shared/utility/graph-helpers";
 
 const bonusPercent = 0.15;
-export const useJulyBonus = (year: number): Outcome => {
+export const useJulyBonus = (year: number): BonusOutcomes => {
   const payDay = useMemo(
     () => DateTime.fromObject({ day: 15, month: 7, year }),
     [year]
@@ -40,6 +40,14 @@ export const useJulyBonus = (year: number): Outcome => {
       AddOutcome(eligbleIncome, meritBonus.cash, juneBonus.cash),
       bonusPercent
     );
-    return { ...outcome, actual: actual ?? outcome.actual };
+    return {
+      cash: { ...outcome, actual: actual ?? outcome.actual },
+      percent: {
+        min: 0.15,
+        max: 0.15,
+        avg: 0.15,
+        actual: 0.15,
+      },
+    };
   }, [actual, income, juneBonus.cash, meritBonus.cash]);
 };

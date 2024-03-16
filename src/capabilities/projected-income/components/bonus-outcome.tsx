@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
-import { Until } from "shared/components/formatters/until";
 
 export const BonusOutcome = (props: {
   title: string;
@@ -45,9 +44,7 @@ export const BonusOutcome = (props: {
         <Value
           title={"Actual"}
           secondaryValue={
-            <Until dateTime={payDate}>
-              <Cash value={outcome.cash.actual} />
-            </Until>
+            outcome.percent.actual && <Percent value={outcome.percent.actual} />
           }
         >
           <Duration dateTime={payDate}>

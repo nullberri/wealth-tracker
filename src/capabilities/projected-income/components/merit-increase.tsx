@@ -8,7 +8,7 @@ import { Until } from "shared/components/formatters/until";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/graph-helpers";
 import { Value } from "./value";
-import { useCommonMerit } from "../hooks/use-common-merit";
+import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
 import { useProjectedPay } from "../hooks/use-projected-pay";
 import { useMemo } from "react";
 import { useBaseIncome } from "../hooks/use-base-income";
@@ -21,7 +21,11 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
     DateTime.fromObject({ day: 1, month: 1, year: payDate.year + 1 })
   );
 
-  const commonMerit = useCommonMerit();
+  const meritIncreases = useStore(
+    store,
+    (x) => x.projectedIncome.timeSeries.meritIncreasePct
+  );
+  const commonMerit = useMostFrequentValue(meritIncreases);
   const meritPct = useStore(
     store,
     (x) =>
@@ -41,6 +45,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
 
   const totalAdjust = meritPct + (equityPct?.value ?? 0);
   const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
+
   return (
     <Box
       sx={{

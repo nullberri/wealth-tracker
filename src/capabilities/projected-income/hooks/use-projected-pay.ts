@@ -5,7 +5,7 @@ import { AccountData } from "shared/models/account-data";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/graph-helpers";
 import { sortByDate } from "shared/utility/sort-by-date";
-import { useCommonMerit } from "./use-common-merit";
+import { useMostFrequentValue } from "./use-most-frequent-value";
 
 const valueByDateRange = (account: AccountData[]) => {
   return account
@@ -26,7 +26,8 @@ const valueByDateRange = (account: AccountData[]) => {
 export const useProjectedPay = () => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const baseIncome = timeSeries.paycheck;
-  const lastMerit = useCommonMerit();
+
+  const lastMerit = useMostFrequentValue(timeSeries.meritIncreasePct);
 
   return useMemo(() => {
     const payPerPeriod = valueByDateRange(baseIncome);

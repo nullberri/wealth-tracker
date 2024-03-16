@@ -31,12 +31,14 @@ export const useJuneBonus = (year: number): BonusOutcomes => {
       .reduce((acc, curr) => acc + curr.value, 0);
 
     const outcomes = minMaxAvg(timeseries.companyBonusPct.map((x) => x.value));
-
     const cash = scaleOutcome(outcomes, meritFactor * income);
+    const projectedActual = mostRecentPercent?.value
+      ? mostRecentPercent?.value * meritFactor * income
+      : undefined;
 
     return {
       percent: { ...outcomes, actual: mostRecentPercent?.value },
-      cash: { ...cash, actual: mostRecentBonus?.value },
+      cash: { ...cash, actual: mostRecentBonus?.value ?? projectedActual },
     };
   }, [
     income,
