@@ -5,6 +5,7 @@ import {
   Paper,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -127,7 +128,27 @@ export const Layout = (props: LayoutProps) => {
       <Box display="flex" flexDirection="column" height="100%">
         <Box flex="0 1 auto" marginBottom={2}>
           <Typography sx={{ marginBottom: 2 }} variant="h5">
-            {title}
+            {title}{" "}
+            {variant === "cash" && (
+              <Tooltip
+                title={
+                  <>
+                    <span>Cash values are used in lieu of Percent values.</span>
+                    <br />
+                    <span>
+                      Cash Values are considered actual payment values.
+                    </span>
+                  </>
+                }
+              >
+                <span>($)</span>
+              </Tooltip>
+            )}
+            {variant === "percent" && (
+              <Tooltip title="Percentage values are used for predictions.">
+                <span>(%)</span>
+              </Tooltip>
+            )}
           </Typography>
         </Box>
         <Box flex="1 1 auto">

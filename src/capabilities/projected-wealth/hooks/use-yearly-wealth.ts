@@ -46,10 +46,6 @@ export const getEarliestEntry = (accounts: (Account | Mortgage)[]) => {
   );
 };
 
-//todo return ranges of values for every year with earliest entry as first benchmark
-//todo add now and current year
-//todo add now + 1 year and current year.
-
 export const useYearlyWealth = (date: DateTime, benchmarkDate: DateTime) => {
   const accounts = useStore(store, (x) => Object.values(x.wealth));
   return useMemo(() => {

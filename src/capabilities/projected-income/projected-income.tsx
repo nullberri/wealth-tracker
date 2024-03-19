@@ -109,46 +109,46 @@ export const ProjectedIncome = () => {
               accountName="paycheck"
               variant="cash"
               defaultDate={DateTime.fromObject({ day: 1, month: 4 })}
-              title="Income Per Check ($)"
+              title="Income Per Check"
             />
             <Layout
-              title="Merit Increase (%)"
+              title="Merit Increase"
               accountName="meritIncreasePct"
               variant="percent"
               defaultDate={dates.meritIncreaseDay}
             />
             <Layout
-              title="Equity Increase (%)"
+              title="Equity Increase"
               accountName="equityPct"
               variant="percent"
               defaultDate={dates.meritIncreaseDay}
             />
             <Layout
-              title="Merit Bonus (%)"
+              title="Merit Bonus"
               accountName="meritBonusPct"
               variant="percent"
               defaultDate={dates.meritPayDay}
             />
             <Layout
-              title="Merit Bonus ($)"
+              title="Merit Bonus"
               accountName="meritBonus"
               variant="cash"
               defaultDate={dates.meritPayDay}
             />
             <Layout
-              title="Company Bonus Factor (%)"
+              title="Company Bonus Factor"
               accountName="companyBonusPct"
               defaultDate={dates.junePayDay}
               variant="percent"
             />
             <Layout
-              title="Company Bonus ($)"
+              title="Company Bonus"
               accountName="companyBonus"
               defaultDate={dates.junePayDay}
               variant="cash"
             />
             <Layout
-              title="Retirement Bonus ($)"
+              title="Retirement Bonus"
               accountName="retirementBonus"
               defaultDate={dates.julyPayDay}
               variant="cash"

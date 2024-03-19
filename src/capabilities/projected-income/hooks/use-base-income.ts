@@ -24,11 +24,8 @@ export const useBaseIncome = (startDate: DateTime, endDate: DateTime) => {
     });
 
     const incomePerPeriod = x.map(([start, end, value]) => {
-      return [
-        start,
-        end,
-        (end.diff(start, "weeks").weeks / 2) * value,
-      ] as const;
+      const weeks = end.diff(start, "weeks").weeks / 2;
+      return [start, end, weeks * value, value, weeks] as const;
     });
 
     const totalIncome = Math.round(

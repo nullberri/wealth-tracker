@@ -74,10 +74,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       <Divider />
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
-        <Value
-          title={"Paycheck"}
-          secondaryValue={<Percent value={totalAdjust} />}
-        >
+        <Value title={"Paycheck"}>
           <Cash value={payCheck * 1 + (equityPct?.value ?? 0)} />
         </Value>
         <Tooltip
@@ -91,29 +88,31 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
           title={
             <Table sx={{ width: "max-content" }}>
               <TableBody>
-                {income.incomePerPeriod.map(([start, end, value], index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{start.toFormat(shortDate)}</TableCell>
-                      <TableCell>
-                        <ArrowForwardIcon />
-                      </TableCell>
-                      <TableCell>{end.toFormat(shortDate)}</TableCell>
-                      <TableCell>
-                        <Cash value={value} />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                {income.incomePerPeriod.map(
+                  ([start, end, value, _paycheck, weeks], index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <Cash value={value} />
+                        </TableCell>
+                        <TableCell>{start.toFormat(shortDate)}</TableCell>
+                        <TableCell>
+                          <ArrowForwardIcon />
+                        </TableCell>
+                        <TableCell>{end.toFormat(shortDate)}</TableCell>
+                        <TableCell>
+                          <Cash value={_paycheck} /> x {weeks.toFixed(1)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
               </TableBody>
             </Table>
           }
         >
           <div>
-            <Value
-              title={"Base Pay"}
-              secondaryValue={<Percent value={totalAdjust} />}
-            >
+            <Value title={"Base Pay"}>
               <Cash value={income.totalIncome ?? 0} />
             </Value>
           </div>

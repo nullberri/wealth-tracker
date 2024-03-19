@@ -23,7 +23,6 @@ import { RenameAccount } from "../components/update-account";
 import { createAccountColumnConfig } from "./column-config";
 import { useMissingYears } from "./hooks/useMissingYears";
 
-//todo warn if no values exist for jan 1 for each year an entry is present
 export const AccountTab = (props: { accountName: string }) => {
   const { accountName } = props;
   const account = useStore(
