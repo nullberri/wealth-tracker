@@ -26,14 +26,17 @@ export const NewAccount = forwardRef<
     <>
       <Button
         ref={ref}
+        variant="outlined"
         onClick={() => {
           setOpen(true);
           setError(false);
           setAccountType(undefined);
         }}
+        sx={{ marginLeft: 2 }}
       >
         add account
       </Button>
+
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add New Account</DialogTitle>
         <DialogContent>

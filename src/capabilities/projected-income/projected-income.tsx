@@ -2,7 +2,11 @@ import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
-import { AddOutcome, outcomeFromSingle } from "shared/utility/min-max-avg";
+import {
+  AddOutcome,
+  actualizedOutcome,
+  outcomeFromSingle,
+} from "shared/utility/min-max-avg";
 import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
@@ -11,9 +15,17 @@ import { useAprilBonus } from "./hooks/use-april-bonus";
 import { useBaseIncome } from "./hooks/use-base-income";
 import { useJulyBonus } from "./hooks/use-july-bonus";
 import { useJuneBonus } from "./hooks/use-june-bonus";
+import { store } from "shared/store";
+import { useStore } from "@tanstack/react-store";
 
 export const ProjectedIncome = () => {
   const [year, setYear] = useState(DateTime.local().year);
+
+  const oldestYear = useStore(store, (x) => {
+    const first = x.projectedIncome.timeSeries.paycheck[1]?.date;
+    const date = first ? DateTime.fromISO(first) : DateTime.local();
+    return date.year;
+  });
 
   const dates = useMemo(() => {
     return {
@@ -39,9 +51,9 @@ export const ProjectedIncome = () => {
   const incomeOutcome = useMemo(() => {
     return AddOutcome(
       outcomeFromSingle(income.totalIncome),
-      meritBonus.cash,
-      juneBonus.cash,
-      julyBonus.cash
+      actualizedOutcome(meritBonus.cash),
+      actualizedOutcome(juneBonus.cash),
+      actualizedOutcome(julyBonus.cash)
     );
   }, [income, julyBonus, juneBonus, meritBonus]);
 
@@ -52,12 +64,12 @@ export const ProjectedIncome = () => {
           <Outcome
             title={
               <Box display="flex" alignItems={"center"} gap={2} width={"100%"}>
-                <span>Projected Income</span>
+                <span>Income</span>
                 <DatePicker
                   sx={{ width: 90, marginLeft: "auto", marginRight: 2 }}
                   label={"year"}
                   views={["year"]}
-                  minDate={DateTime.local().plus({ years: -1 })}
+                  minDate={DateTime.local().set({ year: oldestYear })}
                   maxDate={DateTime.local().plus({ years: 10 })}
                   defaultValue={DateTime.local()}
                   slotProps={{
