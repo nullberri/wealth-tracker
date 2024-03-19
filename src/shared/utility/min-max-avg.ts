@@ -31,6 +31,9 @@ export const outcomeFromSingle = (value: number): Outcome => {
   return { min: value, max: value, avg: value, actual: value };
 };
 
+export const actualizedOutcome = (outcome: Outcome): Outcome =>
+  outcome.actual ? outcomeFromSingle(outcome.actual) : outcome;
+
 export const scaleOutcome = (outcome: Outcome, value: number): Outcome => {
   return {
     min: outcome.min * value,

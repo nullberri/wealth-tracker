@@ -7,6 +7,7 @@ import {
   BonusOutcomes,
   scaleOutcome,
   minMaxAvg,
+  actualizedOutcome,
 } from "shared/utility/min-max-avg";
 import { findSameYear } from "shared/utility/graph-helpers";
 import { useMostFrequentValue } from "./use-most-frequent-value";
@@ -17,7 +18,7 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
     [year]
   );
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
-  const income = useBaseIncome(
+  const { totalIncome } = useBaseIncome(
     DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
     DateTime.fromObject({ day: 1, month: 1, year })
   );
@@ -42,21 +43,19 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
     );
     meritOutcome.avg = frequentMeritBonusPercent;
 
-    const projectedActual = bonusPercent ? bonusPercent * income : undefined;
-
     return {
-      percent: { ...meritOutcome, actual: bonusPercent },
-      cash: {
-        ...scaleOutcome(meritOutcome, income),
-        actual: bonusAmmount ?? projectedActual,
-      },
+      percent: actualizedOutcome({ ...meritOutcome, actual: bonusPercent }),
+      cash: actualizedOutcome({
+        ...scaleOutcome(meritOutcome, totalIncome),
+        actual: bonusAmmount,
+      }),
     };
   }, [
     bonusAmmount,
     bonusPercent,
     frequentMeritBonusPercent,
-    income,
     timeSeries.meritBonusPct,
+    totalIncome,
     year,
   ]);
 };

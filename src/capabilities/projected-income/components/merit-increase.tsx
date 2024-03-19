@@ -1,4 +1,14 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
@@ -12,6 +22,8 @@ import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
 import { useProjectedPay } from "../hooks/use-projected-pay";
 import { useMemo } from "react";
 import { useBaseIncome } from "../hooks/use-base-income";
+import { shortDate } from "shared/utility/format-date";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   const { title, payDate } = props;
@@ -44,7 +56,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   );
 
   const totalAdjust = meritPct + (equityPct?.value ?? 0);
-  const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
+  //const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
 
   return (
     <Box
@@ -66,14 +78,46 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
           title={"Paycheck"}
           secondaryValue={<Percent value={totalAdjust} />}
         >
-          <Cash value={payCheck * multiplier} />
+          <Cash value={payCheck * 1 + (equityPct?.value ?? 0)} />
         </Value>
-        <Value
-          title={"Base Pay"}
-          secondaryValue={<Percent value={totalAdjust} />}
+        <Tooltip
+          componentsProps={{
+            tooltip: {
+              sx: {
+                maxWidth: "none",
+              },
+            },
+          }}
+          title={
+            <Table sx={{ width: "max-content" }}>
+              <TableBody>
+                {income.incomePerPeriod.map(([start, end, value], index) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{start.toFormat(shortDate)}</TableCell>
+                      <TableCell>
+                        <ArrowForwardIcon />
+                      </TableCell>
+                      <TableCell>{end.toFormat(shortDate)}</TableCell>
+                      <TableCell>
+                        <Cash value={value} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          }
         >
-          <Cash value={income ?? 0} />
-        </Value>
+          <div>
+            <Value
+              title={"Base Pay"}
+              secondaryValue={<Percent value={totalAdjust} />}
+            >
+              <Cash value={income.totalIncome ?? 0} />
+            </Value>
+          </div>
+        </Tooltip>
         <Value
           title={"Actual"}
           secondaryValue={

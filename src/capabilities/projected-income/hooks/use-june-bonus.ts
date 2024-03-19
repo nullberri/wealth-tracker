@@ -8,6 +8,7 @@ import {
   BonusOutcomes,
   scaleOutcome,
   minMaxAvg,
+  actualizedOutcome,
 } from "shared/utility/min-max-avg";
 
 export const useJuneBonus = (year: number): BonusOutcomes => {
@@ -16,7 +17,7 @@ export const useJuneBonus = (year: number): BonusOutcomes => {
     [year]
   );
   const timeseries = useStore(store, (x) => x.projectedIncome.timeSeries);
-  const income = useBaseIncome(
+  const { totalIncome } = useBaseIncome(
     DateTime.fromObject({ day: 1, month: 4, year: year - 1 }),
     DateTime.fromObject({ day: 31, month: 3, year })
   );
@@ -31,17 +32,23 @@ export const useJuneBonus = (year: number): BonusOutcomes => {
       .reduce((acc, curr) => acc + curr.value, 0);
 
     const outcomes = minMaxAvg(timeseries.companyBonusPct.map((x) => x.value));
-    const cash = scaleOutcome(outcomes, meritFactor * income);
+    const cash = scaleOutcome(outcomes, meritFactor * totalIncome);
     const projectedActual = mostRecentPercent?.value
-      ? mostRecentPercent?.value * meritFactor * income
+      ? mostRecentPercent?.value * meritFactor * totalIncome
       : undefined;
 
     return {
-      percent: { ...outcomes, actual: mostRecentPercent?.value },
-      cash: { ...cash, actual: mostRecentBonus?.value ?? projectedActual },
+      percent: actualizedOutcome({
+        ...outcomes,
+        actual: mostRecentPercent?.value,
+      }),
+      cash: actualizedOutcome({
+        ...cash,
+        actual: mostRecentBonus?.value ?? projectedActual,
+      }),
     };
   }, [
-    income,
+    totalIncome,
     payedOn,
     timeseries.companyBonus,
     timeseries.companyBonusPct,

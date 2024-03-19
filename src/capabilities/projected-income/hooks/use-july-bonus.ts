@@ -6,6 +6,7 @@ import { useJuneBonus } from "./use-june-bonus";
 import {
   AddOutcome,
   BonusOutcomes,
+  actualizedOutcome,
   outcomeFromSingle,
   scaleOutcome,
 } from "shared/utility/min-max-avg";
@@ -26,7 +27,7 @@ export const useJulyBonus = (year: number): BonusOutcomes => {
       findSameYear(payDay, x.projectedIncome.timeSeries.retirementBonus)?.value
   );
 
-  const income = useBaseIncome(
+  const { totalIncome } = useBaseIncome(
     DateTime.fromObject({ day: 1, month: 7, year: year - 1 }),
     DateTime.fromObject({ day: 1, month: 7, year })
   );
@@ -35,13 +36,17 @@ export const useJulyBonus = (year: number): BonusOutcomes => {
   const juneBonus = useJuneBonus(year);
 
   return useMemo(() => {
-    const eligbleIncome = outcomeFromSingle(income);
+    const eligbleIncome = outcomeFromSingle(totalIncome);
     const outcome = scaleOutcome(
-      AddOutcome(eligbleIncome, meritBonus.cash, juneBonus.cash),
+      AddOutcome(
+        eligbleIncome,
+        actualizedOutcome(meritBonus.cash),
+        actualizedOutcome(juneBonus.cash)
+      ),
       bonusPercent
     );
     return {
-      cash: { ...outcome, actual: actual ?? outcome.actual },
+      cash: actualizedOutcome({ ...outcome, actual: actual ?? outcome.actual }),
       percent: {
         min: 0.15,
         max: 0.15,
@@ -49,5 +54,5 @@ export const useJulyBonus = (year: number): BonusOutcomes => {
         actual: 0.15,
       },
     };
-  }, [actual, income, juneBonus.cash, meritBonus.cash]);
+  }, [actual, juneBonus.cash, meritBonus.cash, totalIncome]);
 };

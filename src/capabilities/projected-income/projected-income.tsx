@@ -24,7 +24,7 @@ export const ProjectedIncome = () => {
         year: year + 1,
       }),
       junePayDay: DateTime.fromObject({ day: 15, month: 6, year: year }),
-      meritPayDay: DateTime.fromObject({ day: 15, month: 6, year: year }),
+      meritPayDay: DateTime.fromObject({ day: 15, month: 4, year: year }),
       meritIncreaseDay: DateTime.fromObject({ day: 1, month: 4, year: year }),
       julyPayDay: DateTime.fromObject({ day: 15, month: 7, year: year }),
     };
@@ -38,7 +38,7 @@ export const ProjectedIncome = () => {
 
   const incomeOutcome = useMemo(() => {
     return AddOutcome(
-      outcomeFromSingle(income),
+      outcomeFromSingle(income.totalIncome),
       meritBonus.cash,
       juneBonus.cash,
       julyBonus.cash

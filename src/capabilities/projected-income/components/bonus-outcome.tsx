@@ -16,35 +16,52 @@ export const BonusOutcome = (props: {
   return (
     <Box sx={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: 2 }}>
       <Typography
-        sx={{ paddingBottom: 1, paddingLeft: 2, paddingTop: 1 }}
+        sx={{
+          paddingBottom: 1,
+          paddingLeft: 2,
+          paddingTop: 1,
+          paddingRight: 2,
+        }}
         variant="h5"
       >
         {title}
       </Typography>
       <Divider />
-      <Stack padding={1} direction={"row"} spacing={0.5}>
-        <Value
-          secondaryValue={<Percent value={outcome.percent.min} />}
-          title={"min"}
-        >
-          <Cash value={outcome.cash.min} fallback={0} />
-        </Value>
-        <Value
-          secondaryValue={<Percent value={outcome.percent.avg} />}
-          title={"avg"}
-        >
-          <Cash value={outcome.cash.avg} fallback={0} />
-        </Value>
-        <Value
-          secondaryValue={<Percent value={outcome.percent.max} />}
-          title={"max"}
-        >
-          <Cash value={outcome.cash.max} fallback={0} />
-        </Value>
+      <Stack
+        padding={1}
+        direction={"row"}
+        spacing={0.5}
+        justifyContent={"center"}
+      >
+        {!outcome.cash.actual && (
+          <>
+            <Value
+              secondaryValue={<Percent value={outcome.percent.min} />}
+              title={"min"}
+            >
+              <Cash value={outcome.cash.min} fallback={0} />
+            </Value>
+            <Value
+              secondaryValue={<Percent value={outcome.percent.avg} />}
+              title={"avg"}
+            >
+              <Cash value={outcome.cash.avg} fallback={0} />
+            </Value>
+            <Value
+              secondaryValue={<Percent value={outcome.percent.max} />}
+              title={"max"}
+            >
+              <Cash value={outcome.cash.max} fallback={0} />
+            </Value>
+          </>
+        )}
         <Value
           title={"Actual"}
-          secondaryValue={
+          tertiaryValue={
             outcome.percent.actual && <Percent value={outcome.percent.actual} />
+          }
+          secondaryValue={
+            outcome.cash.actual && <Cash value={outcome.cash.actual} />
           }
         >
           <Duration dateTime={payDate}>

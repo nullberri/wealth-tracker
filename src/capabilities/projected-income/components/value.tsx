@@ -4,11 +4,12 @@ import { ReactNode } from "react";
 interface CellProps {
   children?: ReactNode;
   secondaryValue?: ReactNode;
+  tertiaryValue?: ReactNode;
   title: string;
 }
 
 export const Value = (props: CellProps) => {
-  const { children, secondaryValue, title } = props;
+  const { children, secondaryValue, tertiaryValue, title } = props;
   return (
     <Box
       sx={{
@@ -27,7 +28,7 @@ export const Value = (props: CellProps) => {
         <Box fontSize={18} fontWeight={700} lineHeight={"20px"}>
           {children ? children : "??"}
         </Box>
-        {!!secondaryValue && (
+        {!!(secondaryValue ?? tertiaryValue) && (
           <Box
             alignSelf={"flex-end"}
             fontSize={12}
@@ -36,7 +37,7 @@ export const Value = (props: CellProps) => {
             textTransform={"uppercase"}
             color={"#888"}
           >
-            {secondaryValue}
+            {secondaryValue ?? tertiaryValue}
           </Box>
         )}
       </Box>
