@@ -45,6 +45,11 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
         ?.value ?? commonMerit
   );
   const payChecks = useProjectedPay();
+  const hasActualPaycheck = useStore(
+    store,
+    (x) => !!findSameYear(payDate, x.projectedIncome.timeSeries.paycheck)
+  );
+
   const payCheck = useMemo(() => {
     return payChecks.find(([start]) => start.year === payDate.year)?.[2] ?? 0;
   }, [payChecks, payDate.year]);
@@ -74,9 +79,11 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       <Divider />
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
-        <Value title={"Paycheck"}>
-          <Cash value={payCheck * 1 + (equityPct?.value ?? 0)} />
-        </Value>
+        {!hasActualPaycheck && (
+          <Value title={"Paycheck"}>
+            <Cash value={payCheck * 1 + (equityPct?.value ?? 0)} />
+          </Value>
+        )}
         <Tooltip
           componentsProps={{
             tooltip: {

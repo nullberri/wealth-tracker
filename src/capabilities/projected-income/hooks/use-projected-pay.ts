@@ -46,6 +46,7 @@ export const useProjectedPay = () => {
         1 +
         lastMerit +
         (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0);
+
       projectedPayPerPeriod[i] = [
         startDate,
         end.plus({ years: i + 1 }),
