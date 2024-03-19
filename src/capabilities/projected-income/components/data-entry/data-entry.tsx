@@ -136,7 +136,7 @@ export const Layout = (props: LayoutProps) => {
                     <span>Cash values are used in lieu of Percent values.</span>
                     <br />
                     <span>
-                      Cash Values are considered actual payment values.
+                      Cash values are considered actual payment values.
                     </span>
                   </>
                 }
