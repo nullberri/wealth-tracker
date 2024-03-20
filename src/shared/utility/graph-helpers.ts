@@ -6,17 +6,18 @@ import { AccountData } from "shared/models/account-data";
 
 export const findNearstOnOrBefore = (date: DateTime, data: AccountData[]) => {
   return data.find((x, idx, array) => {
-    if (idx == 0 && DateTime.fromISO(x.date).startOf("day") > date) {
+    if (idx == 0 && DateTime.fromISO(x.date).startOf("day") >= date) {
       return true;
     }
-    if (idx < array.length - 1) {
-      if (
-        DateTime.fromISO(x.date).startOf("day") <= date &&
-        DateTime.fromISO(data[idx + 1].date).startOf("day") > date
-      ) {
-        return true;
-      }
+
+    if (
+      idx < array.length - 1 &&
+      DateTime.fromISO(x.date).startOf("day") <= date &&
+      DateTime.fromISO(data[idx + 1].date).startOf("day") > date
+    ) {
+      return true;
     }
+
     if (idx === array.length - 1) {
       return true;
     }
@@ -37,7 +38,7 @@ const getMortgateValue = (date: DateTime, mortgage: Mortgage) => {
   if (
     entry?.date &&
     mortgage.data[0] === entry &&
-    DateTime.fromISO(entry.date) > date
+    DateTime.fromISO(entry.date).startOf("day") > date
   ) {
     return 0;
   }
@@ -51,11 +52,11 @@ const getAccountValue = (date: DateTime, account: Account) => {
   if (
     entry?.date &&
     account.data[0] === entry &&
-    DateTime.fromISO(entry.date) > date
+    DateTime.fromISO(entry.date).startOf("day") > date
   ) {
     return 0;
   }
-  return entry?.value ?? 0;
+  return entry?.value;
 };
 
 export const getGraphValue = (date: DateTime, account: Account | Mortgage) => {
