@@ -47,7 +47,9 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
       percent: actualizedOutcome({ ...meritOutcome, actual: bonusPercent }),
       cash: actualizedOutcome({
         ...scaleOutcome(meritOutcome, totalIncome),
-        actual: bonusAmmount,
+        actual:
+          bonusAmmount ??
+          (bonusPercent ? totalIncome * bonusPercent : undefined),
       }),
     };
   }, [
