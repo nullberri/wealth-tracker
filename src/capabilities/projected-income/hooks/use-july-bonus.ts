@@ -1,8 +1,8 @@
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useBaseIncome } from "./use-base-income";
-import { useAprilBonus } from "./use-april-bonus";
-import { useJuneBonus } from "./use-june-bonus";
+import { store } from "shared/store";
+import { findSameYear } from "shared/utility/find-same-year";
 import {
   AddOutcome,
   BonusOutcomes,
@@ -10,9 +10,9 @@ import {
   outcomeFromSingle,
   scaleOutcome,
 } from "shared/utility/min-max-avg";
-import { useStore } from "@tanstack/react-store";
-import { store } from "shared/store";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { useAprilBonus } from "./use-april-bonus";
+import { useBaseIncome } from "./use-base-income";
+import { useJuneBonus } from "./use-june-bonus";
 
 const bonusPercent = 0.15;
 export const useJulyBonus = (year: number): BonusOutcomes => {

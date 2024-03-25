@@ -1,7 +1,9 @@
 import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
+import { store } from "shared/store";
 import {
   AddOutcome,
   actualizedOutcome,
@@ -15,8 +17,6 @@ import { useAprilBonus } from "./hooks/use-april-bonus";
 import { useBaseIncome } from "./hooks/use-base-income";
 import { useJulyBonus } from "./hooks/use-july-bonus";
 import { useJuneBonus } from "./hooks/use-june-bonus";
-import { store } from "shared/store";
-import { useStore } from "@tanstack/react-store";
 
 export const ProjectedIncome = () => {
   const [year, setYear] = useState(DateTime.local().year);

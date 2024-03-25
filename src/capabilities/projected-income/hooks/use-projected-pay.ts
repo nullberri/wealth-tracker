@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { AccountData } from "shared/models/account-data";
 import { store } from "shared/store";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { findSameYear } from "shared/utility/find-same-year";
 import { sortByDate } from "shared/utility/sort-by-date";
 import { useMostFrequentValue } from "./use-most-frequent-value";
 

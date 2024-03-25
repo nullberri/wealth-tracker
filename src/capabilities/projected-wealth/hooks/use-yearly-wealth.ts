@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Account } from "shared/models/account";
 import { Mortgage } from "shared/models/mortgage";
 import { store } from "shared/store";
-import { findNearstOnOrBefore } from "shared/utility/graph-helpers";
+import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
 import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
 
 export const getWealth = (date: DateTime, accounts: (Account | Mortgage)[]) => {
@@ -13,10 +13,10 @@ export const getWealth = (date: DateTime, accounts: (Account | Mortgage)[]) => {
     accounts
       .map((x) => {
         if (x.type === "account") {
-          const entry = findNearstOnOrBefore(date, x.data);
+          const entry = findNearestOnOrBefore(date, x.data);
           return entry?.value ?? 0;
         } else if (x.type === "mortgage" && x.loan) {
-          const houseValue = findNearstOnOrBefore(date, x.data);
+          const houseValue = findNearestOnOrBefore(date, x.data);
           const balance = calcLoanBalance(date, x.loan);
           return calcEquity(
             x.loan.ownershipPct,

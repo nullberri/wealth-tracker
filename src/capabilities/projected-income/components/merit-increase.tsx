@@ -7,7 +7,7 @@ import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
 import { Until } from "shared/components/formatters/until";
 import { store } from "shared/store";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { findSameYear } from "shared/utility/find-same-year";
 import { useBaseIncome } from "../hooks/use-base-income";
 import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
 import { useProjectedPay } from "../hooks/use-projected-pay";

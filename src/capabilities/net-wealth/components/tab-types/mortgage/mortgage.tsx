@@ -1,23 +1,22 @@
+import { Stack } from "@mui/system";
 import Grid from "@mui/system/Unstable_Grid";
-import { store } from "shared/store";
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
+import { AgGrid } from "shared/components/ag-grid";
+import { Mortgage } from "shared/models/mortgage";
+import { store } from "shared/store";
+
+import { findNearestOnOrBefore } from "shared/utility/find-nearest-on-or-before";
+import { getGraphDates } from "shared/utility/get-graph-dates";
+import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
+import { DeleteAccount } from "../components/delete-account";
+import { RenameAccount } from "../components/update-account";
+import { AddEntry } from "./add-entry";
+import { AddLoan } from "./add-loan";
 import {
   createAccountColumnConfig,
   mortgageColumnConfig,
 } from "./column-config";
-import { AddLoan } from "./add-loan";
-import { AddEntry } from "./add-entry";
-import { AgGrid } from "shared/components/ag-grid";
-import { Mortgage } from "shared/models/mortgage";
-import {
-  findNearstOnOrBefore,
-  getGraphDates,
-} from "shared/utility/graph-helpers";
-import { calcEquity, calcLoanBalance } from "shared/utility/mortgage-calc";
-import { DeleteAccount } from "../components/delete-account";
-import { RenameAccount } from "../components/update-account";
-import { Stack } from "@mui/system";
 
 export const MortgageTab = (props: { accountName: string }) => {
   const { accountName } = props;
@@ -45,7 +44,7 @@ export const MortgageTab = (props: { accountName: string }) => {
         balance: loanBalance,
         equity: calcEquity(
           account.loan!.ownershipPct,
-          findNearstOnOrBefore(date, account.data)?.value,
+          findNearestOnOrBefore(date, account.data)?.value,
           loanBalance,
           account.loan!.principal
         ),

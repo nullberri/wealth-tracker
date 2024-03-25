@@ -30,7 +30,7 @@ export const AccountTab = (props: { accountName: string }) => {
     (state) => state.wealth[accountName]
   ) as Account;
   const [date, setDate] = useState(DateTime.local());
-  const [amount, setamount] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   const missingYears = useMissingYears(account);
   const hasSameDate = useMemo(() => {
@@ -91,7 +91,7 @@ export const AccountTab = (props: { accountName: string }) => {
                       label="amount"
                       value={amount}
                       type="number"
-                      onChange={(event) => setamount(+event.target.value)}
+                      onChange={(event) => setAmount(+event.target.value)}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">$</InputAdornment>

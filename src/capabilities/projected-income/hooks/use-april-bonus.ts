@@ -2,7 +2,7 @@ import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { findSameYear } from "shared/utility/find-same-year";
 import {
   BonusOutcomes,
   actualizedOutcome,

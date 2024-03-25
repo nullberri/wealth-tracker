@@ -1,15 +1,15 @@
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useBaseIncome } from "./use-base-income";
-import { useStore } from "@tanstack/react-store";
 import { store } from "shared/store";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { findSameYear } from "shared/utility/find-same-year";
 import {
   BonusOutcomes,
-  scaleOutcome,
-  minMaxAvg,
   actualizedOutcome,
+  minMaxAvg,
+  scaleOutcome,
 } from "shared/utility/min-max-avg";
+import { useBaseIncome } from "./use-base-income";
 
 export const useJuneBonus = (year: number): BonusOutcomes => {
   const payedOn = useMemo(

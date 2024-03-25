@@ -1,7 +1,8 @@
 import { useStore } from "@tanstack/react-store";
 import { useMemo } from "react";
 import { store } from "shared/store";
-import { getGraphDates, getGraphValue } from "shared/utility/graph-helpers";
+import { getGraphDates } from "shared/utility/get-graph-dates";
+import { getGraphValue } from "shared/utility/get-graph-value";
 
 export const useGraphData = () => {
   const wealth = useStore(store, (x) => x.wealth);
