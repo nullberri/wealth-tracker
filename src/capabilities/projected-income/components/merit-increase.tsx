@@ -1,3 +1,4 @@
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {
   Box,
   Divider,
@@ -11,19 +12,18 @@ import {
 } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
+import { useMemo } from "react";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
 import { Until } from "shared/components/formatters/until";
 import { store } from "shared/store";
+import { shortDate } from "shared/utility/format-date";
 import { findSameYear } from "shared/utility/graph-helpers";
-import { Value } from "./value";
+import { useBaseIncome } from "../hooks/use-base-income";
 import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
 import { useProjectedPay } from "../hooks/use-projected-pay";
-import { useMemo } from "react";
-import { useBaseIncome } from "../hooks/use-base-income";
-import { shortDate } from "shared/utility/format-date";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Value } from "./value";
 
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   const { title, payDate } = props;
@@ -60,7 +60,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       payDate && findSameYear(payDate, x.projectedIncome.timeSeries.equityPct)
   );
 
-  const totalAdjust = meritPct + (equityPct?.value ?? 0);
+  const totalAdjust = (meritPct ?? 0) + (equityPct?.value ?? 0);
   //const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
 
   return (

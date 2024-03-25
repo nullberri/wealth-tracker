@@ -1,15 +1,15 @@
+import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
-import { useBaseIncome } from "./use-base-income";
 import { store } from "shared/store";
-import { useStore } from "@tanstack/react-store";
+import { findSameYear } from "shared/utility/graph-helpers";
 import {
   BonusOutcomes,
-  scaleOutcome,
-  minMaxAvg,
   actualizedOutcome,
+  minMaxAvg,
+  scaleOutcome,
 } from "shared/utility/min-max-avg";
-import { findSameYear } from "shared/utility/graph-helpers";
+import { useBaseIncome } from "./use-base-income";
 import { useMostFrequentValue } from "./use-most-frequent-value";
 
 export const useAprilBonus = (year: number): BonusOutcomes => {
@@ -41,7 +41,7 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
         .filter((x) => DateTime.fromISO(x.date).year <= year)
         .map((x) => x.value)
     );
-    meritOutcome.avg = frequentMeritBonusPercent;
+    meritOutcome.avg = frequentMeritBonusPercent ?? 0;
 
     return {
       percent: actualizedOutcome({ ...meritOutcome, actual: bonusPercent }),
