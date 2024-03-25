@@ -1,10 +1,10 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { BonusOutcomes } from "shared/utility/min-max-avg";
-import { Value } from "./value";
 import { DateTime } from "luxon";
 import { Cash } from "shared/components/formatters/cash";
 import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
+import { BonusOutcomes } from "shared/utility/min-max-avg";
+import { Value } from "./value";
 
 export const BonusOutcome = (props: {
   title: string;
@@ -21,6 +21,7 @@ export const BonusOutcome = (props: {
           paddingLeft: 2,
           paddingTop: 1,
           paddingRight: 2,
+          width: "max-content",
         }}
         variant="h5"
       >
