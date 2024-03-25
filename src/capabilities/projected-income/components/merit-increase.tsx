@@ -1,15 +1,4 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import {
-  Box,
-  Divider,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
@@ -18,11 +7,11 @@ import { Duration } from "shared/components/formatters/duration";
 import { Percent } from "shared/components/formatters/percent";
 import { Until } from "shared/components/formatters/until";
 import { store } from "shared/store";
-import { shortDate } from "shared/utility/format-date";
 import { findSameYear } from "shared/utility/graph-helpers";
 import { useBaseIncome } from "../hooks/use-base-income";
 import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
 import { useProjectedPay } from "../hooks/use-projected-pay";
+import { IncomePerPeriodTooltip } from "./income-per-period";
 import { Value } from "./value";
 
 export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
@@ -30,8 +19,16 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
 
   const income = useBaseIncome(
     DateTime.fromObject({ day: 1, month: 1, year: payDate.year }),
-    DateTime.fromObject({ day: 1, month: 1, year: payDate.year + 1 })
+    DateTime.fromObject({ day: 31, month: 12, year: payDate.year })
   );
+
+  const projectedPay = useProjectedPay();
+  const baseAprToApr = useMemo(() => {
+    return (
+      (projectedPay.find((x) => x.start <= payDate && payDate <= x.end)
+        ?.value ?? 0) * 26
+    );
+  }, [payDate, projectedPay]);
 
   const meritIncreases = useStore(
     store,
@@ -51,7 +48,9 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   );
 
   const payCheck = useMemo(() => {
-    return payChecks.find(([start]) => start.year === payDate.year)?.[2] ?? 0;
+    return (
+      payChecks.find(({ start }) => start.year === payDate.year)?.value ?? 0
+    );
   }, [payChecks, payDate.year]);
 
   const equityPct = useStore(
@@ -93,37 +92,23 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
             },
           }}
           title={
-            <Table sx={{ width: "max-content" }}>
-              <TableBody>
-                {income.incomePerPeriod.map(
-                  ([start, end, value, _paycheck, weeks], index) => {
-                    return (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <Cash value={value} />
-                        </TableCell>
-                        <TableCell>{start.toFormat(shortDate)}</TableCell>
-                        <TableCell>
-                          <ArrowForwardIcon />
-                        </TableCell>
-                        <TableCell>{end.toFormat(shortDate)}</TableCell>
-                        <TableCell>
-                          <Cash value={_paycheck} /> x {weeks.toFixed(1)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
-                )}
-              </TableBody>
-            </Table>
+            <IncomePerPeriodTooltip
+              incomePerPeriod={income.incomePerPeriod}
+              totalIncome={income.totalIncome}
+            />
           }
         >
           <div>
             <Value title={"Base Pay"}>
-              <Cash value={income.totalIncome ?? 0} />
+              <Cash disableTooltip value={income.totalIncome ?? 0} />
             </Value>
           </div>
         </Tooltip>
+
+        <Value title={"APR to APR"}>
+          <Cash value={baseAprToApr} />
+        </Value>
+
         <Value
           title={"Actual"}
           secondaryValue={

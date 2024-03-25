@@ -12,48 +12,67 @@ const valueByDateRange = (account: AccountData[]) => {
     .toSorted(sortByDate((x) => DateTime.fromISO(x.date), "asc"))
     .map((x, index, array) => {
       const next = array[index + 1];
-      return [
-        DateTime.fromISO(x.date),
-        (next?.date
+      return {
+        start: DateTime.fromISO(x.date),
+        end: (next?.date
           ? DateTime.fromISO(next?.date).startOf("day")
-          : DateTime.fromISO(x.date).startOf("day").plus({ years: 1 })
+          : DateTime.fromISO(x.date).endOf("day").plus({ years: 1 })
         ).minus({ days: 1 }),
-        x.value,
-      ] as const;
+        value: x.value,
+      };
     });
 };
 
 export const useProjectedPay = () => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const baseIncome = timeSeries.paycheck;
-
-  const lastMerit = useMostFrequentValue(timeSeries.meritIncreasePct);
+  const meritPct = useMostFrequentValue(timeSeries.meritIncreasePct);
 
   return useMemo(() => {
     const payPerPeriod = valueByDateRange(baseIncome);
     const mostRecentPay =
       payPerPeriod.length > 0
         ? payPerPeriod[payPerPeriod.length - 1]
-        : ([DateTime.local(), DateTime.local().plus({ years: 1 }), 1] as const);
+        : {
+            start: DateTime.local(),
+            end: DateTime.local().plus({ years: 1 }).endOf("day"),
+            value: 1,
+          };
 
-    const projectedPayPerPeriod: [DateTime, DateTime, number][] =
-      Array(11).fill(mostRecentPay);
-    for (let i = 0; i < projectedPayPerPeriod.length; i++) {
-      const [start, end] = projectedPayPerPeriod[i];
-      const [, , value] = projectedPayPerPeriod[i - 1] ?? mostRecentPay;
-      const startDate = start.plus({ years: i + 1 });
+    for (let i = 0; i < 11; i++) {
+      const { start, end, value } = payPerPeriod[0] ?? mostRecentPay;
+      const startDate = start.plus({ years: -1 });
       const multiplier =
-        1 +
-        (lastMerit ?? 0) +
-        (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0);
+        1 /
+        (1 +
+          ((findSameYear(start, timeSeries.meritIncreasePct)?.value ??
+            meritPct ??
+            0) +
+            (findSameYear(start, timeSeries.equityPct)?.value ?? 0)));
 
-      projectedPayPerPeriod[i] = [
-        startDate,
-        end.plus({ years: i + 1 }),
-        value * multiplier,
-      ] as const;
+      payPerPeriod.unshift({
+        start: startDate,
+        end: end.plus({ years: -1 }),
+        value: Math.round(value * multiplier),
+      });
     }
 
-    return [...payPerPeriod, ...projectedPayPerPeriod];
-  }, [baseIncome, lastMerit, timeSeries.equityPct]);
+    const startIdx = payPerPeriod.length;
+    for (let i = startIdx; i < startIdx + 11; i++) {
+      const { start, end, value } = payPerPeriod[i - 1] ?? mostRecentPay;
+      const startDate = start.plus({ years: 1 });
+      const multiplier =
+        1 +
+        (meritPct ?? 0) +
+        (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0);
+
+      payPerPeriod.push({
+        start: startDate,
+        end: end.plus({ years: 1 }),
+        value: Math.round(value * multiplier),
+      });
+    }
+
+    return payPerPeriod;
+  }, [baseIncome, meritPct, timeSeries.equityPct, timeSeries.meritIncreasePct]);
 };
