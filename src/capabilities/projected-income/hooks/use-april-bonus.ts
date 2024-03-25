@@ -23,7 +23,7 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
     DateTime.fromObject({ day: 1, month: 1, year })
   );
 
-  const bonusAmmount = useMemo(() => {
+  const bonusAmount = useMemo(() => {
     return findSameYear(payedOn, timeSeries.meritBonus)?.value;
   }, [payedOn, timeSeries.meritBonus]);
 
@@ -48,12 +48,12 @@ export const useAprilBonus = (year: number): BonusOutcomes => {
       cash: actualizedOutcome({
         ...scaleOutcome(meritOutcome, totalIncome),
         actual:
-          bonusAmmount ??
+          bonusAmount ??
           (bonusPercent ? totalIncome * bonusPercent : undefined),
       }),
     };
   }, [
-    bonusAmmount,
+    bonusAmount,
     bonusPercent,
     frequentMeritBonusPercent,
     timeSeries.meritBonusPct,
