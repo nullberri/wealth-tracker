@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-store";
-import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useDateRanges } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 import {
@@ -10,36 +10,32 @@ import {
   outcomeFromSingle,
   scaleOutcome,
 } from "shared/utility/min-max-avg";
-import { useAprilBonus } from "./use-april-bonus";
 import { useBaseIncome } from "./use-base-income";
-import { useJuneBonus } from "./use-june-bonus";
+import { useJuneBonus } from "./use-company-bonus";
+import { useMeritBonus } from "./use-merit-bonus";
 
 const bonusPercent = 0.15;
-export const useJulyBonus = (year: number): BonusOutcomes => {
-  const payDay = useMemo(
-    () => DateTime.fromObject({ day: 15, month: 7, year }),
-    [year]
-  );
-
+export const useRetirementBonus = (year: number): BonusOutcomes => {
   const actual = useStore(
     store,
     (x) =>
-      findSameYear(payDay, x.projectedIncome.timeSeries.retirementBonus)?.value
+      findSameYear(year, x.projectedIncome.timeSeries.retirementBonus)?.value
   );
 
+  const dateRanges = useDateRanges(year);
   const { totalIncome } = useBaseIncome(
-    DateTime.fromObject({ day: 1, month: 7, year: year - 1 }),
-    DateTime.fromObject({ day: 1, month: 7, year })
+    dateRanges.retirementBonus.start,
+    dateRanges.retirementBonus.end
   );
 
-  const meritBonus = useAprilBonus(year);
+  const meritBonus = useMeritBonus(year);
   const juneBonus = useJuneBonus(year);
 
   return useMemo(() => {
-    const eligbleIncome = outcomeFromSingle(totalIncome);
+    const eligibleIncome = outcomeFromSingle(totalIncome);
     const outcome = scaleOutcome(
       AddOutcome(
-        eligbleIncome,
+        eligibleIncome,
         actualizedOutcome(meritBonus.cash),
         actualizedOutcome(juneBonus.cash)
       ),

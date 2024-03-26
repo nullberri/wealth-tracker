@@ -10,6 +10,7 @@ import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 import { useBaseIncome } from "../hooks/use-base-income";
 import { useMostFrequentValue } from "../hooks/use-most-frequent-value";
+import { usePayCheck } from "../hooks/use-pay-check";
 import { useProjectedPay } from "../hooks/use-projected-pay";
 import { IncomePerPeriodTooltip } from "./income-per-period";
 import { Value } from "./value";
@@ -41,17 +42,6 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       findSameYear(payDate, x.projectedIncome.timeSeries.meritIncreasePct)
         ?.value ?? commonMerit
   );
-  const payChecks = useProjectedPay();
-  const hasActualPaycheck = useStore(
-    store,
-    (x) => !!findSameYear(payDate, x.projectedIncome.timeSeries.paycheck)
-  );
-
-  const payCheck = useMemo(() => {
-    return (
-      payChecks.find(({ start }) => start.year === payDate.year)?.value ?? 0
-    );
-  }, [payChecks, payDate.year]);
 
   const equityPct = useStore(
     store,
@@ -60,7 +50,7 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
   );
 
   const totalAdjust = (meritPct ?? 0) + (equityPct?.value ?? 0);
-  //const multiplier = 1 + (DateTime.local() > payDate ? 0 : totalAdjust);
+  const payCheck = usePayCheck(payDate);
 
   return (
     <Box
@@ -78,11 +68,11 @@ export const MeritOutcome = (props: { title: string; payDate: DateTime }) => {
       <Divider />
 
       <Stack padding={1} direction={"row"} spacing={0.5}>
-        {!hasActualPaycheck && (
+        {
           <Value title={"Paycheck"}>
-            <Cash value={payCheck * 1 + (equityPct?.value ?? 0)} />
+            <Cash value={payCheck} compact={false} />
           </Value>
-        )}
+        }
         <Tooltip
           componentsProps={{
             tooltip: {

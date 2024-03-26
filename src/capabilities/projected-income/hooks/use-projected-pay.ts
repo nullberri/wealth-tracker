@@ -23,6 +23,12 @@ const valueByDateRange = (account: AccountData[]) => {
     });
 };
 
+const defaultValue = {
+  start: DateTime.fromObject({ month: 1, day: 1 }),
+  end: DateTime.fromObject({ month: 12, day: 31 }).endOf("day"),
+  value: 1,
+};
+
 export const useProjectedPay = () => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const baseIncome = timeSeries.paycheck;
@@ -30,25 +36,17 @@ export const useProjectedPay = () => {
 
   return useMemo(() => {
     const payPerPeriod = valueByDateRange(baseIncome);
-    const mostRecentPay =
-      payPerPeriod.length > 0
-        ? payPerPeriod[payPerPeriod.length - 1]
-        : {
-            start: DateTime.local(),
-            end: DateTime.local().plus({ years: 1 }).endOf("day"),
-            value: 1,
-          };
+    const mostRecentPay = payPerPeriod[payPerPeriod.length - 1] ?? defaultValue;
 
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 2; i++) {
       const { start, end, value } = payPerPeriod[0] ?? mostRecentPay;
       const startDate = start.plus({ years: -1 });
-      const multiplier =
-        1 /
-        (1 +
-          ((findSameYear(start, timeSeries.meritIncreasePct)?.value ??
-            meritPct ??
-            0) +
-            (findSameYear(start, timeSeries.equityPct)?.value ?? 0)));
+      const equity = findSameYear(start, timeSeries.equityPct)?.value ?? 0;
+      const merit =
+        findSameYear(start, timeSeries.meritIncreasePct)?.value ??
+        meritPct ??
+        0;
+      const multiplier = 1 / (1 + merit + equity);
 
       payPerPeriod.unshift({
         start: startDate,
@@ -61,10 +59,12 @@ export const useProjectedPay = () => {
     for (let i = startIdx; i < startIdx + 11; i++) {
       const { start, end, value } = payPerPeriod[i - 1] ?? mostRecentPay;
       const startDate = start.plus({ years: 1 });
-      const multiplier =
-        1 +
-        (meritPct ?? 0) +
-        (findSameYear(startDate, timeSeries.equityPct)?.value ?? 0);
+      const equity = findSameYear(startDate, timeSeries.equityPct)?.value ?? 0;
+      const merit =
+        findSameYear(startDate, timeSeries.meritIncreasePct)?.value ??
+        meritPct ??
+        0;
+      const multiplier = 1 + merit + equity;
 
       payPerPeriod.push({
         start: startDate,

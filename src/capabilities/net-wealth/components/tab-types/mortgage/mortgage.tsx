@@ -54,7 +54,7 @@ export const MortgageTab = (props: { accountName: string }) => {
 
   return (
     <Grid container height="100%" width={"100%"} padding={1} spacing={2}>
-      <Grid xs={3}>
+      <Grid lg={3}>
         <AgGrid
           reactiveCustomComponents
           rowData={account?.data ?? []}
@@ -62,24 +62,24 @@ export const MortgageTab = (props: { accountName: string }) => {
           id={account + "-history"}
         />
       </Grid>
-      <Grid xs={3}>
+      <Grid lg={3}>
         <AgGrid
           rowData={mortgageData}
           columnDefs={mortgageColumnConfig}
           id={account + "-history"}
         />
       </Grid>
-      <Grid xs={6}>
+      <Grid lg={6}>
         <div>
           <Grid container spacing={2}>
-            <Grid xs={3}>
+            <Grid xl={3}>
               <AddLoan accountName={accountName} />
             </Grid>
-            <Grid xs={3}>
+            <Grid xl={3}>
               <AddEntry accountName={accountName} />
             </Grid>
-            <Grid xs={3}></Grid>
-            <Grid xs={3}>
+            <Grid xl={0}></Grid>
+            <Grid xl={3}>
               <Stack spacing={2}>
                 <DeleteAccount accountName={accountName} />
                 <RenameAccount accountName={accountName} />

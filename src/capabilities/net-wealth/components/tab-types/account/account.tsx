@@ -66,7 +66,7 @@ export const AccountTab = (props: { accountName: string }) => {
         </Alert>
       )}
       <Grid container height="100%" width={"100%"} padding={1} spacing={2}>
-        <Grid xs>
+        <Grid xl={3} lg={4}>
           <AgGrid
             reactiveCustomComponents
             rowData={account?.data ?? []}
@@ -74,10 +74,10 @@ export const AccountTab = (props: { accountName: string }) => {
             id={account + "-history"}
           />
         </Grid>
-        <Grid xs={9}>
+        <Grid xl={9} lg={8}>
           <div>
             <Grid container spacing={2}>
-              <Grid xs={2}>
+              <Grid xl={2} lg={3}>
                 <Paper elevation={3} sx={{ padding: 2 }}>
                   <Stack spacing={1}>
                     <DatePicker
@@ -108,8 +108,8 @@ export const AccountTab = (props: { accountName: string }) => {
                   </Stack>
                 </Paper>
               </Grid>
-              <Grid xs={8}></Grid>
-              <Grid xs={2}>
+              <Grid xl={8} lg={0}></Grid>
+              <Grid xl={2} lg={4}>
                 <Stack spacing={2}>
                   <DeleteAccount accountName={accountName} />
                   <RenameAccount accountName={accountName} />

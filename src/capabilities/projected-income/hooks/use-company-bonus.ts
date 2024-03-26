@@ -1,6 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useDateRanges } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 import {
@@ -12,26 +13,23 @@ import {
 import { useBaseIncome } from "./use-base-income";
 
 export const useJuneBonus = (year: number): BonusOutcomes => {
-  const payedOn = useMemo(
-    () => DateTime.fromObject({ day: 15, month: 6, year }),
-    [year]
-  );
-  const timeseries = useStore(store, (x) => x.projectedIncome.timeSeries);
+  const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
+  const dateRanges = useDateRanges(year);
   const { totalIncome } = useBaseIncome(
-    DateTime.fromObject({ day: 1, month: 4, year: year - 1 }),
-    DateTime.fromObject({ day: 31, month: 3, year })
+    dateRanges.companyBonus.start,
+    dateRanges.companyBonus.end
   );
 
   return useMemo(() => {
-    const mostRecentBonus = findSameYear(payedOn, timeseries.companyBonus);
-    const mostRecentPercent = findSameYear(payedOn, timeseries.companyBonusPct);
+    const mostRecentBonus = findSameYear(year, timeSeries.companyBonus);
+    const mostRecentPercent = findSameYear(year, timeSeries.companyBonusPct);
 
-    const meritFactor = timeseries.meritBonusPct
+    const meritFactor = timeSeries.meritBonusPct
       .filter((x) => DateTime.fromISO(x.date).year <= year)
       .slice(-3)
       .reduce((acc, curr) => acc + curr.value, 0);
 
-    const outcomes = minMaxAvg(timeseries.companyBonusPct.map((x) => x.value));
+    const outcomes = minMaxAvg(timeSeries.companyBonusPct.map((x) => x.value));
     const cash = scaleOutcome(outcomes, meritFactor * totalIncome);
     const projectedActual = mostRecentPercent?.value
       ? mostRecentPercent?.value * meritFactor * totalIncome
@@ -49,10 +47,9 @@ export const useJuneBonus = (year: number): BonusOutcomes => {
     };
   }, [
     totalIncome,
-    payedOn,
-    timeseries.companyBonus,
-    timeseries.companyBonusPct,
-    timeseries.meritBonusPct,
+    timeSeries.companyBonus,
+    timeSeries.companyBonusPct,
+    timeSeries.meritBonusPct,
     year,
   ]);
 };

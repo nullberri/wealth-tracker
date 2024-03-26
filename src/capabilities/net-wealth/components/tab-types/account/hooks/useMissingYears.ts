@@ -28,7 +28,7 @@ export const useMissingYears = (account: Account) => {
 
     const lookup = Object.fromEntries(years);
     const missing = [];
-    for (let i = years[0][0]; i <= years[years.length - 1][0]; i++) {
+    for (let i = years[0]?.[0] ?? 0; i <= years[years.length - 1]?.[0]; i++) {
       if (!lookup[i]) {
         missing.push(i);
       }

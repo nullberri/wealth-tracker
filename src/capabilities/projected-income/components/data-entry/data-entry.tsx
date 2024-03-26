@@ -42,7 +42,7 @@ export const DataEntry = (props: {
   }, [account, date]);
 
   const onAddEntry = () => {
-    amount != null &&
+    if (amount != null) {
       store.setState((prev) => {
         return create(prev, (next) => {
           next.projectedIncome.timeSeries[accountName] =
@@ -55,6 +55,8 @@ export const DataEntry = (props: {
               .sort(sortByDate((x) => DateTime.fromISO(x.date), "asc"));
         });
       });
+      setAmount(null);
+    }
   };
 
   const accountColumnConfig = useMemo(() => {

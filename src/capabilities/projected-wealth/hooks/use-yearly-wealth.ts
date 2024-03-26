@@ -35,7 +35,9 @@ export const getEarliestEntry = (accounts: (Account | Mortgage)[]) => {
     accounts
       .map((x) => {
         if (x.type === "account") {
-          return DateTime.fromISO(x.data[0].date);
+          return x.data[0]?.date
+            ? DateTime.fromISO(x.data[0].date)
+            : DateTime.local();
         }
         return DateTime.local();
       })
@@ -48,6 +50,7 @@ export const getEarliestEntry = (accounts: (Account | Mortgage)[]) => {
 
 export const useYearlyWealth = (date: DateTime, benchmarkDate: DateTime) => {
   const accounts = useStore(store, (x) => Object.values(x.wealth));
+
   return useMemo(() => {
     const earliest = getEarliestEntry(accounts);
     if (earliest.year >= date.year) {

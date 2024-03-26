@@ -3,6 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
+import { useDateRanges, useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import {
   AddOutcome,
@@ -13,10 +14,10 @@ import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
-import { useAprilBonus } from "./hooks/use-april-bonus";
 import { useBaseIncome } from "./hooks/use-base-income";
-import { useJulyBonus } from "./hooks/use-july-bonus";
-import { useJuneBonus } from "./hooks/use-june-bonus";
+import { useJuneBonus } from "./hooks/use-company-bonus";
+import { useMeritBonus } from "./hooks/use-merit-bonus";
+import { useRetirementBonus } from "./hooks/use-retirement-bonus";
 
 export const ProjectedIncome = () => {
   const [year, setYear] = useState(DateTime.local().year);
@@ -27,26 +28,13 @@ export const ProjectedIncome = () => {
     return date.year;
   });
 
-  const dates = useMemo(() => {
-    return {
-      janFirst: DateTime.fromObject({ day: 1, month: 1, year: year }),
-      nextJanFirst: DateTime.fromObject({
-        day: 1,
-        month: 1,
-        year: year + 1,
-      }),
-      junePayDay: DateTime.fromObject({ day: 15, month: 6, year: year }),
-      meritPayDay: DateTime.fromObject({ day: 15, month: 4, year: year }),
-      meritIncreaseDay: DateTime.fromObject({ day: 1, month: 4, year: year }),
-      julyPayDay: DateTime.fromObject({ day: 15, month: 7, year: year }),
-    };
-  }, [year]);
+  const dates = useDates(year);
+  const { base } = useDateRanges(year);
+  const income = useBaseIncome(base.start, base.end);
 
-  const income = useBaseIncome(dates.janFirst, dates.nextJanFirst);
-
-  const meritBonus = useAprilBonus(year);
+  const meritBonus = useMeritBonus(year);
   const juneBonus = useJuneBonus(year);
-  const julyBonus = useJulyBonus(year);
+  const julyBonus = useRetirementBonus(year);
 
   const incomeOutcome = useMemo(() => {
     return AddOutcome(
@@ -85,26 +73,23 @@ export const ProjectedIncome = () => {
               </Box>
             }
             outcome={incomeOutcome}
-            payDate={dates.junePayDay}
+            payDate={dates.companyBonus}
           />
-          <MeritOutcome
-            title="Merit Increase"
-            payDate={dates.meritIncreaseDay}
-          />
+          <MeritOutcome title="Merit Increase" payDate={dates.meritIncrease} />
           <BonusOutcome
             title="Merit Bonus"
             outcome={meritBonus}
-            payDate={dates.meritPayDay}
+            payDate={dates.meritBonus}
           />
           <BonusOutcome
             title="Company Bonus"
             outcome={juneBonus}
-            payDate={dates.junePayDay}
+            payDate={dates.companyBonus}
           />
           <BonusOutcome
             title="Retirement Bonus"
             outcome={julyBonus}
-            payDate={dates.julyPayDay}
+            payDate={dates.retirementBonus}
           />
         </Stack>
       </Box>
@@ -127,42 +112,42 @@ export const ProjectedIncome = () => {
               title="Merit Increase"
               accountName="meritIncreasePct"
               variant="percent"
-              defaultDate={dates.meritIncreaseDay}
+              defaultDate={dates.meritIncrease}
             />
             <Layout
               title="Equity Increase"
               accountName="equityPct"
               variant="percent"
-              defaultDate={dates.meritIncreaseDay}
+              defaultDate={dates.meritIncrease}
             />
             <Layout
               title="Merit Bonus"
               accountName="meritBonusPct"
               variant="percent"
-              defaultDate={dates.meritPayDay}
+              defaultDate={dates.meritBonus}
             />
             <Layout
               title="Merit Bonus"
               accountName="meritBonus"
               variant="cash"
-              defaultDate={dates.meritPayDay}
+              defaultDate={dates.meritBonus}
             />
             <Layout
               title="Company Bonus Factor"
               accountName="companyBonusPct"
-              defaultDate={dates.junePayDay}
+              defaultDate={dates.companyBonus}
               variant="percent"
             />
             <Layout
               title="Company Bonus"
               accountName="companyBonus"
-              defaultDate={dates.junePayDay}
+              defaultDate={dates.companyBonus}
               variant="cash"
             />
             <Layout
               title="Retirement Bonus"
               accountName="retirementBonus"
-              defaultDate={dates.julyPayDay}
+              defaultDate={dates.retirementBonus}
               variant="cash"
             />
           </Box>

@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useDates } from "shared/hooks/use-dates";
 import { DateRangesOverlap } from "shared/utility/date-ranges-overlap";
 import { PayPeriod, getPayPeriods } from "shared/utility/get-pay-periods";
 import { useProjectedPay } from "./use-projected-pay";
@@ -18,13 +19,12 @@ export interface BaseIncome {
   incomePerPeriod: IncomePerPeriod[];
 }
 
-const aPayday = DateTime.fromObject({ month: 12, day: 1, year: 2023 });
-
 export const useBaseIncome = (
   startDate: DateTime,
   endDate: DateTime
 ): BaseIncome => {
   const pay = useProjectedPay();
+  const { aPayday } = useDates(startDate.year);
 
   return useMemo(() => {
     const payPeriods = getPayPeriods(aPayday, startDate, endDate).map(
@@ -75,5 +75,5 @@ export const useBaseIncome = (
       }, [] as IncomePerPeriod[]);
 
     return { totalIncome, payPeriods, incomePerPeriod };
-  }, [startDate, endDate, pay]);
+  }, [aPayday, startDate, endDate, pay]);
 };

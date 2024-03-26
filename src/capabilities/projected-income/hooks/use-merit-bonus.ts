@@ -1,6 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { useDateRanges } from "shared/hooks/use-dates";
 import { store } from "shared/store";
 import { findSameYear } from "shared/utility/find-same-year";
 import {
@@ -12,24 +13,21 @@ import {
 import { useBaseIncome } from "./use-base-income";
 import { useMostFrequentValue } from "./use-most-frequent-value";
 
-export const useAprilBonus = (year: number): BonusOutcomes => {
-  const payedOn = useMemo(
-    () => DateTime.fromObject({ day: 15, month: 4, year }),
-    [year]
-  );
+export const useMeritBonus = (year: number): BonusOutcomes => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
+  const ranges = useDateRanges(year);
   const { totalIncome } = useBaseIncome(
-    DateTime.fromObject({ day: 1, month: 1, year: year - 1 }),
-    DateTime.fromObject({ day: 1, month: 1, year })
+    ranges.meritBonus.start,
+    ranges.meritBonus.end
   );
 
   const bonusAmount = useMemo(() => {
-    return findSameYear(payedOn, timeSeries.meritBonus)?.value;
-  }, [payedOn, timeSeries.meritBonus]);
+    return findSameYear(year, timeSeries.meritBonus)?.value;
+  }, [timeSeries.meritBonus, year]);
 
   const bonusPercent = useMemo(() => {
-    return findSameYear(payedOn, timeSeries.meritBonusPct)?.value;
-  }, [payedOn, timeSeries.meritBonusPct]);
+    return findSameYear(year, timeSeries.meritBonusPct)?.value;
+  }, [timeSeries.meritBonusPct, year]);
 
   const frequentMeritBonusPercent = useMostFrequentValue(
     timeSeries.meritBonusPct
