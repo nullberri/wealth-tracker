@@ -1,38 +1,11 @@
 import { z } from "zod";
-import { accountDataValidator } from "./account-data";
 
 export const projectedWealth = z.object({
-  timeSeries: z.object({
-    paycheck: z.array(accountDataValidator),
-    retirementRate: z.array(accountDataValidator),
-    savingsRate: z.array(accountDataValidator),
-    meritBonusPct: z.array(accountDataValidator),
-    companyBonusPct: z.array(accountDataValidator),
-    meritBonus: z.array(accountDataValidator),
-    companyBonus: z.array(accountDataValidator),
-    retirementBonus: z.array(accountDataValidator),
-    equityPct: z.array(accountDataValidator),
-    meritIncreasePct: z.array(accountDataValidator),
-  }),
-});
-
-export const getDefaults = () => ({
-  projectedIncome: {
-    timeSeries: {
-      paycheck: [],
-      retirementRate: [],
-      savingsRate: [],
-      meritBonusPct: [],
-      companyBonusPct: [],
-      meritBonus: [],
-      companyBonus: [],
-      retirementBonus: [],
-      equityPct: [],
-      meritIncreasePct: [],
-    },
-  },
-  wealth: {},
+  socialSecurityCap: z.number(),
+  socialSecurityTaxPct: z.number(),
+  medicareSupplementalTaxCap: z.number(),
+  medicareSupplementalTaxPct: z.number(),
+  savingsRate: z.number(),
 });
 
 export type ProjectedWealth = z.infer<typeof projectedWealth>;
-export type TimeSeries = keyof ProjectedWealth["timeSeries"];

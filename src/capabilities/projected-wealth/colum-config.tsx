@@ -34,18 +34,13 @@ export const columnConfig: ColDef<TimeSeriesWealth>[] = [
   },
   {
     headerName: "YoY ($)",
-    valueGetter: (x) =>
-      x.data && x.data.benchmarkWealth
-        ? x.data?.wealth - x.data?.benchmarkWealth
-        : null,
-    valueFormatter: (x) => (x.value !== null ? formatCash(x.value) : ""),
+    valueGetter: (x) => x.data?.yoyCash,
+    valueFormatter: (x) => (x.value != undefined ? formatCash(x.value) : ""),
   },
   {
     headerName: "YoY (%)",
-    valueGetter: (x) =>
-      x.data && x.data.benchmarkWealth
-        ? x.data?.wealth / x.data?.benchmarkWealth - 1
-        : null,
-    valueFormatter: (x) => (x.value !== null ? formatPercent(x.value) : ""),
+    valueGetter: (x) => x.data?.yoyPct,
+    valueFormatter: (x) =>
+      x.value !== undefined ? formatPercent(x.value) : "",
   },
 ];

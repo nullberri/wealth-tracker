@@ -7,7 +7,7 @@ import { useState } from "react";
 import { SafetyButton } from "shared/components/safety-button";
 import { useExport } from "shared/hooks/use-export";
 import { useImport } from "shared/hooks/use-import";
-import { getDefaults } from "shared/models/projected-wealth";
+import { getDefaultStore } from "shared/models/store";
 import { store } from "shared/store";
 
 export const App = () => {
@@ -27,7 +27,7 @@ export const App = () => {
           <Button onClick={onExport}>Export</Button>
           <SafetyButton
             onConfirm={() => {
-              store.setState(() => getDefaults());
+              store.setState(() => getDefaultStore());
             }}
             inactiveLabel="Reset"
             activatingLabel="Wait"

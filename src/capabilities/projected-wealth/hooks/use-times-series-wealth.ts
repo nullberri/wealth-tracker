@@ -11,7 +11,8 @@ export interface TimeSeriesWealth {
   graphDate: Date;
   date: DateTime;
   wealth: number;
-  benchmarkWealth?: number;
+  yoyCash?: number;
+  yoyPct?: number;
 }
 
 export const useTimeSeriesWealth = () => {
@@ -26,8 +27,11 @@ export const useTimeSeriesWealth = () => {
     }
     const dates = new Array(DateTime.local().year + 2 - earliest.year)
       .fill(earliest.year)
-      .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }))
-      .toSpliced(-1, 0, DateTime.local().startOf("day"));
+      .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }));
+
+    if (DateTime.local() !== dates[dates.length - 2]) {
+      dates.splice(-1, 0, DateTime.local().startOf("day"));
+    }
 
     return dates
       .map((date) => {
@@ -68,7 +72,17 @@ export const useTimeSeriesWealth = () => {
           wealth: homeEquity + accountsWealth + futureWealth,
         };
       })
-      .map((x, idx, arr) => ({ ...x, benchmarkWealth: arr[idx - 1]?.wealth }));
+      .map((x, idx, arr) => {
+        const benchmarkWealth = arr[idx - 1]?.wealth;
+        if (!benchmarkWealth) {
+          return x;
+        }
+        return {
+          ...x,
+          yoyCash: x.wealth - benchmarkWealth,
+          yoyPct: x.wealth / benchmarkWealth - 1,
+        };
+      });
   }, [accounts, bonuses, earliest.isValid, earliest.year]);
   return data as TimeSeriesWealth[];
 };

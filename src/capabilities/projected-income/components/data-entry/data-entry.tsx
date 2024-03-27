@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 import { create } from "mutative";
 import { useMemo, useState } from "react";
 import { AgGrid } from "shared/components/ag-grid";
-import { TimeSeries } from "shared/models/projected-wealth";
+import { TimeSeries } from "shared/models/projected-income";
 import { store } from "shared/store";
 import { shortDate } from "shared/utility/format-date";
 import { sortByDate } from "shared/utility/sort-by-date";

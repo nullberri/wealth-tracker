@@ -1,16 +1,16 @@
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import UpdateIcon from "@mui/icons-material/Update";
 import { Button, Tooltip } from "@mui/material";
+import { Stack } from "@mui/system";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { DateTime } from "luxon";
 import { create } from "mutative";
 import { AccountData } from "shared/models/account-data";
-import { TimeSeries } from "shared/models/projected-wealth";
+import { TimeSeries } from "shared/models/projected-income";
 import { store } from "shared/store";
 import { formatCash } from "shared/utility/format-cash";
 import { shortDate } from "shared/utility/format-date";
-import UpdateIcon from "@mui/icons-material/Update";
-import { Stack } from "@mui/system";
 
 export const createAccountColumnConfig = (
   accountName: TimeSeries,

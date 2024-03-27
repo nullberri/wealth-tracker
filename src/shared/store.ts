@@ -1,7 +1,7 @@
 import { Store as CreateStore } from "@tanstack/store";
 import merge from "deepmerge";
 import { ZodSchema } from "zod";
-import { Store, storeValidator } from "./models/store";
+import { Store, getDefaultStore, storeValidator } from "./models/store";
 
 const createStore = <T extends object>(
   key: string,
@@ -33,20 +33,8 @@ const createStore = <T extends object>(
   return store;
 };
 
-export const store = createStore<Store>("store", storeValidator, {
-  projectedIncome: {
-    timeSeries: {
-      paycheck: [],
-      retirementRate: [],
-      savingsRate: [],
-      meritBonusPct: [],
-      companyBonusPct: [],
-      meritBonus: [],
-      companyBonus: [],
-      retirementBonus: [],
-      equityPct: [],
-      meritIncreasePct: [],
-    },
-  },
-  wealth: {},
-});
+export const store = createStore<Store>(
+  "store",
+  storeValidator,
+  getDefaultStore()
+);
