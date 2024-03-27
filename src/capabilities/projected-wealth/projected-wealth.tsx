@@ -31,16 +31,3 @@ export const ProjectedWealth = () => {
     </Grid>
   );
 };
-
-/*
-Show Year+1 
-
-future savings:
-  +SSN 
-  -Medicare surplus
-  +Monthly Saving rate target
- 
-When do we hit SSN limit, 168600 2024
-when do we hit medicare surplus (.009 on all wages over 200k )
-
-*/

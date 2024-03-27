@@ -21,9 +21,9 @@ export const getDefaultStore = (): Store => ({
   wealth: {},
   projectedWealth: {
     medicareSupplementalTaxCap: 200_000,
-    socialSecurityCap: 168_000,
-    socialSecurityTaxPct: 0.07,
-    medicareSupplementalTaxPct: 0.01,
+    socialSecurityCap: 168_600,
+    socialSecurityTaxPct: 0.062,
+    medicareSupplementalTaxPct: 0.009,
     savingsRate: 0,
   },
 });

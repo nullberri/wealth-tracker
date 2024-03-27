@@ -1,4 +1,5 @@
 import { useStore } from "@tanstack/react-store";
+import { useTotalIncome } from "capabilities/projected-income/hooks/use-total-income";
 import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { store } from "shared/store";
@@ -16,8 +17,12 @@ export interface TimeSeriesWealth {
 }
 
 export const useTimeSeriesWealth = () => {
+  const localDateTime = DateTime.local().startOf("day");
+  const currentYear = DateTime.local().year;
   const earliest = useEarliestAccountEntry();
   const accounts = useStore(store, (x) => x.wealth);
+  const config = useStore(store, (x) => x.projectedWealth);
+  const { taxableIncome } = useTotalIncome(currentYear);
 
   const bonuses = useFutureBonusesCurrentYear();
 
@@ -25,12 +30,14 @@ export const useTimeSeriesWealth = () => {
     if (!earliest.isValid) {
       return [];
     }
-    const dates = new Array(DateTime.local().year + 2 - earliest.year)
+    const dates = new Array(currentYear + 2 - earliest.year)
       .fill(earliest.year)
-      .map((x, i) => DateTime.fromObject({ day: 1, month: 1, year: x + i }));
+      .map((x, i) =>
+        DateTime.fromObject({ day: 1, month: 1, year: x + i }).startOf("day")
+      );
 
-    if (DateTime.local() !== dates[dates.length - 2]) {
-      dates.splice(-1, 0, DateTime.local().startOf("day"));
+    if (localDateTime !== dates[dates.length - 2]) {
+      dates.splice(-1, 0, localDateTime);
     }
 
     return dates
@@ -62,8 +69,20 @@ export const useTimeSeriesWealth = () => {
           .reduce((acc, curr) => acc + curr, 0);
 
         let futureWealth = 0;
-        if (date.year === DateTime.local().year + 1) {
+        if (date.year === currentYear + 1) {
           futureWealth += bonuses;
+          futureWealth += config.savingsRate * date.diffNow("months").months;
+          const income = taxableIncome.actual ?? taxableIncome.avg;
+          futureWealth +=
+            income > config.socialSecurityCap
+              ? config.socialSecurityTaxPct *
+                (income - config.socialSecurityCap)
+              : 0;
+          futureWealth -=
+            income > config.medicareSupplementalTaxCap
+              ? config.medicareSupplementalTaxPct *
+                (income - config.medicareSupplementalTaxCap)
+              : 0;
         }
 
         return {
@@ -83,6 +102,20 @@ export const useTimeSeriesWealth = () => {
           yoyPct: x.wealth / benchmarkWealth - 1,
         };
       });
-  }, [accounts, bonuses, earliest.isValid, earliest.year]);
+  }, [
+    accounts,
+    bonuses,
+    config.medicareSupplementalTaxCap,
+    config.medicareSupplementalTaxPct,
+    config.savingsRate,
+    config.socialSecurityCap,
+    config.socialSecurityTaxPct,
+    currentYear,
+    earliest.isValid,
+    earliest.year,
+    localDateTime,
+    taxableIncome.actual,
+    taxableIncome.avg,
+  ]);
   return data as TimeSeriesWealth[];
 };

@@ -2,22 +2,17 @@ import { Box, Stack } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useStore } from "@tanstack/react-store";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
-import { useDateRanges, useDates } from "shared/hooks/use-dates";
+import { useState } from "react";
+import { useDates } from "shared/hooks/use-dates";
 import { store } from "shared/store";
-import {
-  AddOutcome,
-  actualizedOutcome,
-  outcomeFromSingle,
-} from "shared/utility/min-max-avg";
 import { BonusOutcome } from "./components/bonus-outcome";
 import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
-import { useBaseIncome } from "./hooks/use-base-income";
 import { useCompanyBonus } from "./hooks/use-company-bonus";
 import { useMeritBonus } from "./hooks/use-merit-bonus";
 import { useRetirementBonus } from "./hooks/use-retirement-bonus";
+import { useTotalIncome } from "./hooks/use-total-income";
 
 export const ProjectedIncome = () => {
   const [year, setYear] = useState(DateTime.local().year);
@@ -29,21 +24,10 @@ export const ProjectedIncome = () => {
   });
 
   const dates = useDates(year);
-  const { base } = useDateRanges(year);
-  const income = useBaseIncome(base.start, base.end);
-
+  const { totalIncome } = useTotalIncome(year);
   const meritBonus = useMeritBonus(year);
   const juneBonus = useCompanyBonus(year);
   const julyBonus = useRetirementBonus(year);
-
-  const incomeOutcome = useMemo(() => {
-    return AddOutcome(
-      outcomeFromSingle(income.totalIncome),
-      actualizedOutcome(meritBonus.cash),
-      actualizedOutcome(juneBonus.cash),
-      actualizedOutcome(julyBonus.cash)
-    );
-  }, [income, julyBonus, juneBonus, meritBonus]);
 
   return (
     <Box display="flex" flexDirection="column" height="100%" gap={2}>
@@ -72,7 +56,7 @@ export const ProjectedIncome = () => {
                 />
               </Box>
             }
-            outcome={incomeOutcome}
+            outcome={totalIncome}
             payDate={dates.companyBonus}
           />
           <MeritOutcome title="Merit Increase" payDate={dates.meritIncrease} />
