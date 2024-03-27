@@ -11,7 +11,7 @@ import {
   scaleOutcome,
 } from "shared/utility/min-max-avg";
 import { useBaseIncome } from "./use-base-income";
-import { useJuneBonus } from "./use-company-bonus";
+import { useCompanyBonus } from "./use-company-bonus";
 import { useMeritBonus } from "./use-merit-bonus";
 
 const bonusPercent = 0.15;
@@ -29,7 +29,7 @@ export const useRetirementBonus = (year: number): BonusOutcomes => {
   );
 
   const meritBonus = useMeritBonus(year);
-  const juneBonus = useJuneBonus(year);
+  const juneBonus = useCompanyBonus(year);
 
   return useMemo(() => {
     const eligibleIncome = outcomeFromSingle(totalIncome);

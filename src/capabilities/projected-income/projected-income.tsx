@@ -15,7 +15,7 @@ import { Layout } from "./components/data-entry/data-entry";
 import { MeritOutcome } from "./components/merit-increase";
 import { Outcome } from "./components/outcome";
 import { useBaseIncome } from "./hooks/use-base-income";
-import { useJuneBonus } from "./hooks/use-company-bonus";
+import { useCompanyBonus } from "./hooks/use-company-bonus";
 import { useMeritBonus } from "./hooks/use-merit-bonus";
 import { useRetirementBonus } from "./hooks/use-retirement-bonus";
 
@@ -33,7 +33,7 @@ export const ProjectedIncome = () => {
   const income = useBaseIncome(base.start, base.end);
 
   const meritBonus = useMeritBonus(year);
-  const juneBonus = useJuneBonus(year);
+  const juneBonus = useCompanyBonus(year);
   const julyBonus = useRetirementBonus(year);
 
   const incomeOutcome = useMemo(() => {

@@ -56,8 +56,9 @@ export const useProjectedPay = () => {
     }
 
     const startIdx = payPerPeriod.length;
-    for (let i = startIdx; i < startIdx + 11; i++) {
-      const { start, end, value } = payPerPeriod[i - 1] ?? mostRecentPay;
+    for (let i = 0; i < 11; i++) {
+      const { start, end, value } =
+        payPerPeriod[startIdx + i - 1] ?? mostRecentPay;
       const startDate = start.plus({ years: 1 });
       const equity = findSameYear(startDate, timeSeries.equityPct)?.value ?? 0;
       const merit =

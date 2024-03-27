@@ -12,7 +12,7 @@ import {
 } from "shared/utility/min-max-avg";
 import { useBaseIncome } from "./use-base-income";
 
-export const useJuneBonus = (year: number): BonusOutcomes => {
+export const useCompanyBonus = (year: number): BonusOutcomes => {
   const timeSeries = useStore(store, (x) => x.projectedIncome.timeSeries);
   const dateRanges = useDateRanges(year);
   const { totalIncome } = useBaseIncome(
